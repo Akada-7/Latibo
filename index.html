@@ -72,12 +72,20 @@
 <!-- ==================== MAIN APP ==================== -->
 <div id="appPage" class="app-container" style="display:none;">
 
+    <!-- MOBILE HEADER -->
+    <div class="mobile-header">
+        <button id="menuToggleMobile" class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('active')">☰</button>
+        <h2>🌙 Dream Journal</h2>
+        <button id="themeToggleMobile" class="theme-toggle" title="Toggle theme">☀️</button>
+    </div>
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('open');this.classList.remove('active')"></div>
+
     <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>🌙 Dream Journal</h2>
             <div style="display:flex;gap:8px;align-items:center;">
-                <button id="menuToggle" class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+                <button id="menuToggle" class="menu-toggle" onclick="document.querySelector('.sidebar').classList.remove('open');document.querySelector('.sidebar-overlay').classList.remove('active')">✕</button>
                 <button id="themeToggle" class="theme-toggle" title="Toggle theme">☀️</button>
             </div>
         </div>
@@ -173,7 +181,7 @@
         <div id="page-discover" class="page">
             <h1>🌍 Discover Dreams</h1>
             <p style="color:var(--text-muted);margin-bottom:16px;">Explore dreams shared by the community</p>
-            <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+            <div class="discover-toolbar" style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
                 <input type="text" id="discoverSearch" class="input" placeholder="Search dreams..." style="flex:1;min-width:200px;">
                 <select id="discoverFilter" class="input" style="width:auto;min-width:150px;">
                     <option value="">All Categories</option>
@@ -263,7 +271,7 @@
         <!-- ===== DETAILS PAGE ===== -->
         <div id="page-details" class="page">
             <h1>🌙 Dream Details</h1>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;">
+            <div class="detail-buttons" style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;">
                 <span class="badge" id="detailCategory">Uncategorized</span>
                 <button id="analyzeBtn" class="btn btn-sm btn-primary" style="width:auto;">🧠 Analyze with AI</button>
                 <button id="shareDreamBtn" class="btn btn-sm" style="width:auto;">🔗 Share</button>
@@ -323,7 +331,7 @@
             <h1>⚙️ Settings</h1>
             <p style="color:var(--text-muted);margin-bottom:24px;">Manage your account and preferences</p>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;" class="settings-grid">
                 <div class="card" style="margin-bottom:0;">
                     <h2>👤 Profile</h2>
                     <div class="form-group" style="margin-bottom:12px;">
@@ -355,7 +363,7 @@
                 </div>
             </div>
 
-            <div class="card" style="width:50%;">
+            <div class="card settings-ai" style="width:50%;">
                 <h2>🧠 AI Configuration</h2>
                 <p style="color:var(--text-secondary);margin-bottom:16px;font-size:14px;">
                     API keys are securely stored on the server.

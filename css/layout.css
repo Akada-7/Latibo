@@ -331,6 +331,12 @@
 }
 
 @media (max-width: 768px) {
+    .mobile-header {
+        display: flex !important;
+    }
+    .sidebar-overlay.active {
+        display: block !important;
+    }
     .sidebar {
         position: fixed;
         left: -300px;
@@ -340,10 +346,38 @@
     }
     .sidebar.open { left: 0; }
     .menu-toggle { display: flex; }
-    .main-content { padding: 16px; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .analysis-grid { grid-template-columns: 1fr; }
+    .main-content { padding: 70px 16px 16px 16px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .stat-card { padding: 14px; }
+    .stat-card h2 { font-size: 26px; }
+    .analysis-grid { grid-template-columns: 1fr; gap: 12px; }
     .detail-layout { flex-direction: column; }
+    .detail-text-box, .detail-analysis-box { padding: 16px; }
+    #page-settings .settings-grid {
+        grid-template-columns: 1fr !important;
+    }
+    #page-settings .settings-ai {
+        width: 100% !important;
+    }
+    .discover-toolbar {
+        flex-direction: column;
+    }
+    .discover-toolbar .input {
+        width: 100%;
+    }
+    .detail-buttons {
+        flex-wrap: wrap;
+    }
+    .detail-buttons .btn {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    h1 { font-size: 24px; }
+    .emotion-grid { gap: 6px; }
+    .emotion-btn { padding: 6px 12px; font-size: 13px; }
+    .category-select { gap: 6px; }
+    .category-btn { padding: 5px 10px; font-size: 12px; }
+    textarea.input { min-height: 180px; }
 }
 
 .menu-toggle {
@@ -363,4 +397,33 @@
 .menu-toggle:hover {
     border-color: var(--accent);
     color: var(--accent);
+}
+
+.mobile-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 99;
+    padding: 0 16px;
+    align-items: center;
+    justify-content: space-between;
+}
+.mobile-header h2 {
+    font-size: 16px;
+    margin: 0;
+}
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+}
+.sidebar-overlay.active {
+    display: block;
 }
