@@ -40,8 +40,10 @@ async function connectDB() {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     const client = new MongoClient(MONGO_URI, {
         ssl: true,
+        tls: true,
         tlsAllowInvalidCertificates: true,
         tlsAllowInvalidHostnames: true,
+        servername: "ac-lor5htd-shard-00-00.8lncda8.mongodb.net",
         retryWrites: true,
         w: "majority",
         authMechanism: "SCRAM-SHA-256"
