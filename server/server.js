@@ -36,11 +36,14 @@ app.use("/api/login", authLimiter);
 let db, usersCol, dreamsCol, sharedCol;
 
 async function connectDB() {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     const client = new MongoClient(MONGO_URI, {
         ssl: true,
         tlsAllowInvalidCertificates: true,
+        tlsAllowInvalidHostnames: true,
         retryWrites: true,
-        w: "majority"
+        w: "majority",
+        authMechanism: "SCRAM-SHA-256"
     });
     await client.connect();
     db = client.db("dreamapp");
