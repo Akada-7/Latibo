@@ -36,6 +36,7 @@ app.use("/api/login", authLimiter);
 let db, usersCol, dreamsCol, sharedCol;
 
 async function connectDB() {
+    console.log("MONGO_URI mevcut mu:", !!MONGO_URI);
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     const client = new MongoClient(MONGO_URI, {
         ssl: true,
