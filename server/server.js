@@ -36,7 +36,12 @@ app.use("/api/login", authLimiter);
 let db, usersCol, dreamsCol, sharedCol;
 
 async function connectDB() {
-    const client = new MongoClient(MONGO_URI);
+    const client = new MongoClient(MONGO_URI, {
+        ssl: true,
+        tlsAllowInvalidCertificates: true,
+        retryWrites: true,
+        w: "majority"
+    });
     await client.connect();
     db = client.db("dreamapp");
     usersCol = db.collection("users");
