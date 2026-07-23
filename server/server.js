@@ -45,8 +45,7 @@ async function connectDB() {
         tlsAllowInvalidHostnames: true,
         servername: "ac-lor5htd-shard-00-00.8lncda8.mongodb.net",
         retryWrites: true,
-        w: "majority",
-        authMechanism: "SCRAM-SHA-256"
+        w: "majority"
     });
     await client.connect();
     db = client.db("dreamapp");
