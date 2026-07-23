@@ -331,6 +331,15 @@
 }
 
 @media (max-width: 768px) {
+    html, body {
+        overflow: auto !important;
+        height: auto !important;
+    }
+    .app-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
     .mobile-header {
         display: flex !important;
     }
@@ -339,14 +348,22 @@
     }
     .sidebar {
         position: fixed;
-        left: -300px;
+        left: -85vw;
         top: 0;
+        width: 85vw;
+        min-width: auto;
         z-index: 100;
         transition: left 0.3s ease;
+        height: 100vh;
     }
     .sidebar.open { left: 0; }
     .menu-toggle { display: flex; }
-    .main-content { padding: 70px 16px 16px 16px; }
+    .main-content {
+        padding: 70px 16px 16px 16px;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
     .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .stat-card { padding: 14px; }
     .stat-card h2 { font-size: 26px; }
@@ -372,12 +389,16 @@
         font-size: 12px;
         padding: 6px 10px;
     }
-    h1 { font-size: 24px; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 18px; }
     .emotion-grid { gap: 6px; }
     .emotion-btn { padding: 6px 12px; font-size: 13px; }
     .category-select { gap: 6px; }
     .category-btn { padding: 5px 10px; font-size: 12px; }
     textarea.input { min-height: 180px; }
+    .detail-analysis-box .analysis-grid { grid-template-columns: 1fr !important; }
+    .detail-analysis-box .analysis-card { grid-column: span 1 !important; }
+    .auth-card { padding: 24px; width: 100%; max-width: 95vw; }
 }
 
 .menu-toggle {
