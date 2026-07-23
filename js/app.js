@@ -59,7 +59,7 @@ const App = {
 
     showApp() {
         document.getElementById("authPage").style.display = "none";
-        document.getElementById("appPage").style.display = "flex";
+        document.getElementById("appPage").style.display = "";
 
         const user = Auth.getCurrentUser();
         if (user) {
@@ -85,6 +85,11 @@ const App = {
         document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
         const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
         if (navItem) navItem.classList.add("active");
+
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.querySelector(".sidebar-overlay");
+        if (sidebar) sidebar.classList.remove("open");
+        if (overlay) overlay.classList.remove("active");
 
         if (page === "dashboard") {
             Stats.update();

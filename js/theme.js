@@ -18,15 +18,17 @@ const Theme = {
     },
 
     updateIcon(theme) {
-        const btn = document.getElementById("themeToggle");
-        if (btn) {
-            btn.textContent = theme === "dark" ? "☀️" : "🌙";
-        }
+        const icon = theme === "dark" ? "☀️" : "🌙";
+        const btn1 = document.getElementById("themeToggle");
+        const btn2 = document.getElementById("themeToggleMobile");
+        if (btn1) btn1.textContent = icon;
+        if (btn2) btn2.textContent = icon;
     },
 
     bindToggle() {
         document.addEventListener("click", (e) => {
-            if (e.target.id === "themeToggle" || e.target.closest("#themeToggle")) {
+            const toggle = e.target.closest("#themeToggle, #themeToggleMobile");
+            if (toggle) {
                 this.toggle();
             }
         });
