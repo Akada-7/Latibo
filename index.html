@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Dream App</title>
+    <meta name="description" content="Record, analyze and discover patterns in your dreams">
+    <meta name="theme-color" content="#7c5cff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <style>
+        .voice-controls { display:flex; align-items:center; gap:12px; margin:12px 0; }
+        .voice-btn { width:auto; padding:10px 20px; font-size:14px; }
+        .voice-btn.listening { background:var(--danger); color:white; animation:pulse 1.5s infinite; }
+        .voice-indicator { display:none; align-items:center; gap:8px; color:var(--text-muted); font-size:13px; }
+        .voice-dot { width:8px; height:8px; border-radius:50%; background:var(--danger); animation:pulse 1s infinite; }
+        #voicePreview { color:var(--text-muted); font-style:italic; font-size:13px; min-height:20px; margin-top:6px; }
+        .weekly-dream-box { background:var(--accent-gradient); padding:14px; border-radius:var(--radius-md); color:white; font-size:13px; }
+    </style>
+</head>
+<body>
+
+<!-- ==================== AUTH PAGE ==================== -->
+<div id="authPage" class="auth-page">
+    <div class="auth-card">
+        <div id="loginView">
+            <h1>🌙 Dream App</h1>
+            <p class="subtitle">Welcome back. Log in to your journal.</p>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" class="input" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" class="input" placeholder="Your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </form>
+            <p class="auth-footer">Don't have an account? <a href="#" onclick="document.getElementById('loginView').style.display='none';document.getElementById('registerView').style.display='block';return false;">Sign up</a></p>
+        </div>
+
+        <div id="registerView" style="display:none;">
+            <h1>🌙 Dream App</h1>
+            <p class="subtitle">Create an account to start journaling.</p>
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="regName" class="input" placeholder="Your name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" class="input" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" class="input" placeholder="Min 4 characters" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+            <p class="auth-footer">Already have an account? <a href="#" onclick="document.getElementById('registerView').style.display='none';document.getElementById('loginView').style.display='block';return false;">Log in</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MAIN APP ==================== -->
+<div id="appPage" class="app-container" style="display:none;">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>🌙 Dream Journal</h2>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button id="menuToggle" class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+                <button id="themeToggle" class="theme-toggle" title="Toggle theme">☀️</button>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <button id="newDreamBtn" class="btn btn-primary">+ New Dream</button>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-nav">
+                <button class="nav-item active" data-page="dashboard">📊 Dashboard</button>
+                <button class="nav-item" data-page="discover">🌍 Discover Dreams</button>
+                <button class="nav-item" data-page="recurring">🔁 Recurring Dreams</button>
+                <button class="nav-item" data-page="settings">⚙️ Settings</button>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>⭐ Dream of the Week</h3>
+            <div id="weeklyDream" class="weekly-dream-box">No dream yet</div>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Search</h3>
+            <input type="text" id="searchBox" class="input" placeholder="Search dreams...">
+        </div>
+
+        <div class="sidebar-section" style="flex:1; overflow:hidden; display:flex; flex-direction:column;">
+            <h3>Recent Dreams</h3>
+            <div id="dreamList" class="dream-list"></div>
+        </div>
+
+        <div class="user-area">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">User</div>
+                <div class="user-email" id="userEmail">user@email.com</div>
+            </div>
+            <button id="logoutBtn" class="btn-icon" title="Logout">🚪</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- ===== DASHBOARD PAGE ===== -->
+        <div id="page-dashboard" class="page active">
+            <h1>🌙 Your Dream Journey</h1>
+            <p style="color:var(--text-muted);">Your dreams, patterns and memories</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h2 id="totalDreams">0</h2>
+                    <p>Dreams</p>
+                </div>
+                <div class="stat-card">
+                    <h2 id="totalLikes">0</h2>
+                    <p>⭐ Stars</p>
+                </div>
+                <div class="stat-card">
+                    <h2 id="totalWords">0</h2>
+                    <p>Words</p>
+                </div>
+                <div class="stat-card">
+                    <h2 id="streak">0</h2>
+                    <p>🔥 Streak</p>
+                </div>
+            </div>
+
+            <h2>🧠 AI Dream Analysis</h2>
+
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <h3>😊 Most Felt Feelings</h3>
+                    <p id="feelingsStats">No data yet</p>
+                </div>
+                <div class="analysis-card">
+                    <h3>📂 Categories</h3>
+                    <p id="categoryStats">No data yet</p>
+                </div>
+                <div class="analysis-card">
+                    <h3>😊 Emotional Balance</h3>
+                    <canvas id="emotionChart"></canvas>
+                </div>
+                <div class="analysis-card">
+                    <h3>📡 Dream Profile</h3>
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== DISCOVER DREAMS PAGE ===== -->
+        <div id="page-discover" class="page">
+            <h1>🌍 Discover Dreams</h1>
+            <p style="color:var(--text-muted);margin-bottom:16px;">Explore dreams shared by the community</p>
+            <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+                <input type="text" id="discoverSearch" class="input" placeholder="Search dreams..." style="flex:1;min-width:200px;">
+                <select id="discoverFilter" class="input" style="width:auto;min-width:150px;">
+                    <option value="">All Categories</option>
+                    <option value="Lucid">🧠 Lucid</option>
+                    <option value="Nature">🌿 Nature</option>
+                    <option value="City">🏙️ City</option>
+                    <option value="Space">🌌 Space</option>
+                    <option value="Water">🌊 Water</option>
+                    <option value="Fantasy">🐉 Fantasy</option>
+                    <option value="Abstract">🎭 Abstract</option>
+                    <option value="People">👥 People</option>
+                </select>
+            </div>
+            <div id="discoverList"></div>
+        </div>
+
+        <!-- ===== EDITOR PAGE ===== -->
+        <div id="page-editor" class="page">
+            <h1>Today's Dream</h1>
+            <p style="color:var(--text-muted);margin-bottom:16px;">Write down your dream while the memory is fresh.</p>
+
+            <div class="voice-controls">
+                <button id="voiceBtn" class="btn voice-btn" style="width:auto;">🎙️ Sesli Giriş</button>
+                <button id="voiceLangBtn" class="btn btn-sm" style="width:auto;">🇹🇷 TR</button>
+                <div id="voiceIndicator" class="voice-indicator">
+                    <span class="voice-dot"></span>
+                    <span>Dinleniyor...</span>
+                </div>
+            </div>
+            <div id="voicePreview"></div>
+
+            <textarea id="ruya" class="input" style="min-height:280px;margin-top:10px;" placeholder="Write your dream here..."></textarea>
+
+            <div class="sidebar-section" style="margin-top:16px;">
+                <h3>Category</h3>
+                <div class="category-select">
+                    <button class="category-btn category-btn-lucid" data-category="Lucid">🧠 Lucid</button>
+                    <button class="category-btn" data-category="Nature">🌿 Nature</button>
+                    <button class="category-btn" data-category="City">🏙️ City</button>
+                    <button class="category-btn" data-category="Space">🌌 Space</button>
+                    <button class="category-btn" data-category="Water">🌊 Water</button>
+                    <button class="category-btn" data-category="Fantasy">🐉 Fantasy</button>
+                    <button class="category-btn" data-category="Abstract">🎭 Abstract</button>
+                    <button class="category-btn" data-category="People">👥 People</button>
+                    <button class="category-btn" data-category="Other">💫 Other</button>
+                </div>
+                <input type="text" id="otherCategoryInput" class="input" placeholder="Type your category..." style="display:none;margin-top:10px;max-width:300px;">
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:16px;">
+                <button id="openTagsBtn" class="btn btn-primary" style="width:auto;">🏷️ Tags & Save</button>
+            </div>
+        </div>
+
+        <!-- ===== TAGS PAGE ===== -->
+        <div id="page-tags" class="page">
+            <h1>🏷️ Dream Tags</h1>
+            <p style="color:var(--text-muted);">How were you feeling in this dream?</p>
+
+            <div class="emotion-grid">
+                <button class="emotion-btn">😊 Happy</button>
+                <button class="emotion-btn">😌 Calm</button>
+                <button class="emotion-btn">😨 Scared</button>
+                <button class="emotion-btn">😰 Anxious</button>
+                <button class="emotion-btn">😢 Sad</button>
+                <button class="emotion-btn">😡 Angry</button>
+                <button class="emotion-btn">😕 Confused</button>
+                <button class="emotion-btn">🤯 Shocked</button>
+                <button class="emotion-btn">🤩 Excited</button>
+                <button class="emotion-btn">🥰 Loved</button>
+                <button class="emotion-btn">😲 Amazed</button>
+                <button class="emotion-btn">😇 Peaceful</button>
+                <button class="emotion-btn">💪 Empowered</button>
+                <button class="emotion-btn">🤔 Puzzled</button>
+                <button class="emotion-btn">🥺 Nostalgic</button>
+                <button class="emotion-btn">😈 Mischievous</button>
+                <button class="emotion-btn">😶 Numb</button>
+                <button class="emotion-btn">💫 Euphoric</button>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:24px;">
+                <button id="finishDreamBtn" class="btn btn-primary" style="width:auto;">✅ Save Dream</button>
+                <button class="btn" style="width:auto;" onclick="App.navigateTo('editor')">← Back</button>
+            </div>
+        </div>
+
+        <!-- ===== DETAILS PAGE ===== -->
+        <div id="page-details" class="page">
+            <h1>🌙 Dream Details</h1>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;">
+                <span class="badge" id="detailCategory">Uncategorized</span>
+                <button id="analyzeBtn" class="btn btn-sm btn-primary" style="width:auto;">🧠 Analyze with AI</button>
+                <button id="shareDreamBtn" class="btn btn-sm" style="width:auto;">🔗 Share</button>
+                <button id="exportDreamBtn" class="btn btn-sm" style="width:auto;">📄 Export</button>
+                <button class="btn btn-sm" style="width:auto;" onclick="App.navigateTo('dashboard')">← Back</button>
+            </div>
+
+            <div class="detail-layout">
+                <div class="detail-text-box">
+                    <h2>Dream</h2>
+                    <p id="detailDreamText"></p>
+                    <textarea id="editDetailText" style="display:none;"></textarea>
+                    <div class="detail-feelings" id="detailFeelings"></div>
+                    <button id="detailSaveBtn" class="btn btn-primary btn-sm" style="display:none;margin-top:14px;width:auto;">Save Changes</button>
+                </div>
+
+                <div class="detail-analysis-box">
+                    <h2>🧠 AI Insights</h2>
+                    <div class="analysis-grid" style="margin-top:0;">
+                        <div class="analysis-card" style="grid-column: span 2;">
+                            <h3>🔍 Deep Analysis</h3>
+                            <p id="dreamDeepAnalysis">No AI analysis yet.</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h3>💡 Suggestions</h3>
+                            <p id="dreamSuggestions">No AI analysis yet.</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h3>🌙 Symbols</h3>
+                            <p id="dreamSymbols">No AI analysis yet.</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h3>😊 Mood</h3>
+                            <p id="dreamMood">No AI analysis yet.</p>
+                        </div>
+                        <div class="analysis-card">
+                            <h3>🔄 Patterns</h3>
+                            <p id="dreamPatterns">No AI analysis yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RECURRING DREAMS PAGE ===== -->
+        <div id="page-recurring" class="page">
+            <h1>🔁 Recurring Dream Patterns</h1>
+            <p style="color:var(--text-muted);margin-bottom:16px;">Discover similar themes and patterns across your dreams.</p>
+
+            <button id="findRecurringBtn" class="btn btn-primary" style="width:auto;margin-bottom:20px;">🔍 Find Recurring Patterns</button>
+
+            <div id="recurringList"></div>
+        </div>
+
+        <!-- ===== SETTINGS PAGE ===== -->
+        <div id="page-settings" class="page">
+            <h1>⚙️ Settings</h1>
+            <p style="color:var(--text-muted);margin-bottom:24px;">Manage your account and preferences</p>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+                <div class="card" style="margin-bottom:0;">
+                    <h2>👤 Profile</h2>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>Name</label>
+                        <input type="text" id="settingsName" class="input" placeholder="Your name">
+                    </div>
+                    <div class="form-group" style="margin-bottom:16px;">
+                        <label>Email</label>
+                        <input type="email" id="settingsEmail" class="input" placeholder="Your email">
+                    </div>
+                    <button id="saveProfileBtn" class="btn btn-primary" style="width:auto;">Save Profile</button>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h2>🔒 Change Password</h2>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>Current Password</label>
+                        <input type="password" id="currentPassword" class="input" placeholder="Current password">
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" class="input" placeholder="New password (min 4 chars)">
+                    </div>
+                    <div class="form-group" style="margin-bottom:16px;">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmPassword" class="input" placeholder="Confirm new password">
+                    </div>
+                    <button id="changePasswordBtn" class="btn btn-primary" style="width:auto;">Change Password</button>
+                </div>
+            </div>
+
+            <div class="card" style="width:50%;">
+                <h2>🧠 AI Configuration</h2>
+                <p style="color:var(--text-secondary);margin-bottom:16px;font-size:14px;">
+                    API keys are securely stored on the server.
+                </p>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>AI Provider</label>
+                    <select id="aiProvider" class="input">
+                        <option value="deepseek">DeepSeek (deepseek-chat)</option>
+                        <option value="openai">OpenAI (GPT-4o-mini)</option>
+                        <option value="claude">Anthropic (Claude 3 Haiku)</option>
+                    </select>
+                </div>
+                <button id="saveApiBtn" class="btn btn-primary" style="width:auto;">Save Provider</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dreams.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/ai-analysis.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/recurring.js"></script>
+<script src="js/discover.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

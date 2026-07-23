@@ -1,0 +1,19 @@
+{
+    "name": "Dream Journal",
+    "short_name": "DreamApp",
+    "description": "Record, analyze and discover patterns in your dreams",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#121218",
+    "theme_color": "#7c5cff",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "assets/icons/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ],
+    "categories": ["lifestyle", "health"]
+}

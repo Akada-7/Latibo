@@ -1,0 +1,107 @@
+const AIAnalysis = {
+    provider: "openai",
+
+    init() {
+        this.provider = localStorage.getItem("dreamapp_ai_provider") || "openai";
+        this.bindEvents();
+    },
+
+    bindEvents() {
+        document.addEventListener("click", (e) => {
+            if (e.target.id === "analyzeBtn" || e.target.closest("#analyzeBtn")) {
+                this.analyzeCurrentDream();
+            }
+            if (e.target.id === "saveApiBtn" || e.target.closest("#saveApiBtn")) {
+                this.saveProvider();
+            }
+        });
+    },
+
+    saveProvider() {
+        const provider = document.getElementById("aiProvider").value;
+        this.provider = provider;
+        localStorage.setItem("dreamapp_ai_provider", provider);
+        Utils.showToast("AI provider saved!", "success");
+    },
+
+    async analyzeCurrentDream() {
+        if (!Dreams.selectedDreamId) return;
+
+        const dreams = Storage.getDreams();
+        const dream = dreams.find(d => d.id === Dreams.selectedDreamId);
+        if (!dream) return;
+
+        if (!Storage.getToken()) {
+            Utils.showToast("Please log in to use AI analysis.", "error");
+            return;
+        }
+
+        const btn = document.getElementById("analyzeBtn");
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = "Analyzing...";
+        }
+
+        try {
+            const analysis = await Storage.apiCall("/chat", "POST", {
+                text: dream.text
+            });
+
+            await Storage.updateDream(dream.id, { aiAnalysis: analysis });
+            this.displayAnalysis(analysis);
+            Utils.showToast("AI analysis complete!", "success");
+        } catch (err) {
+            Utils.showToast("AI analysis failed: " + err.message, "error");
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = "🧠 Analyze with AI";
+            }
+        }
+    },
+
+    displayAnalysis(analysis) {
+        const set = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val || "No analysis available.";
+        };
+
+        const setSymbols = (id, val) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (!val) { el.textContent = "No analysis available."; return; }
+            const lines = val.split("\n").filter(l => l.trim());
+            el.innerHTML = lines.map(line => {
+                const clean = line.replace(/^[\-\*\•\d\.]+\s*/, "").trim();
+                const parts = clean.split(/[:\-–]/);
+                if (parts.length >= 2) {
+                    const symbol = parts[0].trim();
+                    const meaning = parts.slice(1).join("-").trim();
+                    return `<div style="margin-bottom:8px;"><strong style="color:var(--accent);">✦ ${Utils.escapeHtml(symbol)}</strong><br><span style="color:var(--text-secondary);margin-left:16px;">${Utils.escapeHtml(meaning)}</span></div>`;
+                }
+                return `<div style="margin-bottom:6px;color:var(--text-secondary);">✦ ${Utils.escapeHtml(clean)}</div>`;
+            }).join("");
+        };
+
+        set("dreamMood", analysis.mood);
+        setSymbols("dreamSymbols", analysis.symbols);
+        set("dreamPatterns", analysis.patterns);
+        set("dreamSuggestions", analysis.suggestions);
+
+        const deepEl = document.getElementById("dreamDeepAnalysis");
+        if (deepEl) deepEl.textContent = analysis.deepAnalysis || "";
+    },
+
+    loadExistingAnalysis(dream) {
+        if (dream.aiAnalysis && typeof dream.aiAnalysis === "object") {
+            this.displayAnalysis(dream.aiAnalysis);
+        } else {
+            ["dreamMood", "dreamSymbols", "dreamPatterns", "dreamSuggestions"].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = "No AI analysis yet.";
+            });
+            const deepEl = document.getElementById("dreamDeepAnalysis");
+            if (deepEl) deepEl.textContent = "No AI analysis yet.";
+        }
+    }
+};
