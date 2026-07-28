@@ -219,39 +219,37 @@ const Discover = {
     },
 
     showReportModal(id) {
-        const modal = document.getElementById("reportModal");
-        if (!modal) {
-            const overlay = document.createElement("div");
-            overlay.className = "modal-overlay active";
-            overlay.id = "reportModal";
-            overlay.innerHTML = `
-                <div class="modal" onclick="event.stopPropagation()">
-                    <h2>🚩 Report Dream</h2>
-                    <div class="form-group" style="margin-bottom:16px;">
-                        <label>Reason</label>
-                        <select id="reportReason" class="input">
-                            <option value="Inappropriate content">Inappropriate content</option>
-                            <option value="Spam">Spam</option>
-                            <option value="Harassment">Harassment</option>
-                            <option value="Not dream related">Not dream related</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div style="display:flex;gap:10px;justify-content:flex-end;">
-                        <button id="cancelReportBtn" class="btn" style="width:auto;">Cancel</button>
-                        <button id="submitReportBtn" class="btn btn-primary" style="width:auto;">Report</button>
-                    </div>
-                    <input type="hidden" id="reportDreamId" value="${id}">
+        const existing = document.getElementById("reportModal");
+        if (existing) existing.remove();
+
+        const overlay = document.createElement("div");
+        overlay.className = "modal-overlay active";
+        overlay.id = "reportModal";
+        overlay.innerHTML = `
+            <div class="modal" onclick="event.stopPropagation()">
+                <h2>🚩 Report Dream</h2>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>Reason</label>
+                    <select id="reportReason" class="input">
+                        <option value="I didn't like this dream">😕 I didn't like this dream</option>
+                        <option value="Inappropriate content">Inappropriate content</option>
+                        <option value="Spam">Spam</option>
+                        <option value="Harassment">Harassment</option>
+                        <option value="Not dream related">Not dream related</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
-            `;
-            overlay.onclick = () => overlay.remove();
-            overlay.querySelector(".modal").onclick = (e) => e.stopPropagation();
-            document.body.appendChild(overlay);
-        } else {
-            document.getElementById("reportDreamId").value = id;
-            modal.style.display = "flex";
-            modal.classList.add("active");
-        }
+                <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Reporting will hide this dream from your feed.</p>
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button id="cancelReportBtn" class="btn" style="width:auto;">Cancel</button>
+                    <button id="submitReportBtn" class="btn btn-primary" style="width:auto;">Report & Hide</button>
+                </div>
+                <input type="hidden" id="reportDreamId" value="${id}">
+            </div>
+        `;
+        overlay.onclick = () => overlay.remove();
+        overlay.querySelector(".modal").onclick = (e) => e.stopPropagation();
+        document.body.appendChild(overlay);
     },
 
     hideReportModal() {
@@ -265,8 +263,10 @@ const Discover = {
         if (!reason) return;
 
         try {
-            await Storage.apiCall(`/discover/${id}/report`, "POST", { reason });
-            Utils.showToast("Dream reported. Thank you!", "success");
+            const result = await Storage.apiCall(`/discover/${id}/report`, "POST", { reason });
+            this.dreams = this.dreams.filter(d => d._id !== id);
+            this.render();
+            Utils.showToast("Dream reported and hidden.", "success");
             this.hideReportModal();
         } catch (e) {
             Utils.showToast("Failed: " + e.message, "error");

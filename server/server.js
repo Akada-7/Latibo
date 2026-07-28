@@ -273,6 +273,7 @@ app.get("/api/discover", async (req, res) => {
         try {
             const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
             filter.userId = { $ne: decoded.id };
+            filter.hiddenBy = { $nin: [decoded.id] };
         } catch (e) {}
     }
 
@@ -341,7 +342,13 @@ app.post("/api/discover/:id/report", authMiddleware, async (req, res) => {
         reason: reason.trim(),
         createdAt: new Date()
     };
-    await sharedCol.updateOne({ _id: new ObjectId(id) }, { $push: { reports: report } });
+    await sharedCol.updateOne({ _id: new ObjectId(id) }, { $push: { reports: report }, $addToSet: { hiddenBy: req.user.id } });
+    res.json({ success: true, hidden: true });
+});
+
+app.post("/api/discover/:id/hide", authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    await sharedCol.updateOne({ _id: new ObjectId(id) }, { $addToSet: { hiddenBy: req.user.id } });
     res.json({ success: true });
 });
 
