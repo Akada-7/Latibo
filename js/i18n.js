@@ -6,7 +6,7 @@ const LANG = {
     get current() { return this._current; },
 
     async init() {
-        this._current = localStorage.getItem("dreamapp_lang") || "tr";
+        this._current = localStorage.getItem("dreamapp_lang") || "en";
         this._strings = this._current === "en" ? this.en : this.tr;
         this.applyToDOM();
         document.documentElement.lang = this._current;
