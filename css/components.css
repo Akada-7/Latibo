@@ -13,6 +13,9 @@
     background: var(--bg-tertiary);
     color: var(--text-primary);
     transition: all var(--transition);
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 .btn:hover { background: var(--bg-hover); transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
@@ -42,6 +45,9 @@
     background: transparent;
     color: var(--text-muted);
     font-size: 14px;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 .btn-icon:hover {
     color: var(--text-primary);
