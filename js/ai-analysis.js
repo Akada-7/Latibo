@@ -21,7 +21,7 @@ const AIAnalysis = {
         const provider = document.getElementById("aiProvider").value;
         this.provider = provider;
         localStorage.setItem("dreamapp_ai_provider", provider);
-        Utils.showToast("AI provider saved!", "success");
+        Utils.showToast(__("toast.aiProviderSaved"), "success");
     },
 
     async analyzeCurrentDream() {
@@ -32,14 +32,14 @@ const AIAnalysis = {
         if (!dream) return;
 
         if (!Storage.getToken()) {
-            Utils.showToast("Please log in to use AI analysis.", "error");
+            Utils.showToast(__("toast.aiLoginNeeded"), "error");
             return;
         }
 
         const btn = document.getElementById("analyzeBtn");
         if (btn) {
             btn.disabled = true;
-            btn.textContent = "Analyzing...";
+            btn.textContent = __("detail.analyzing");
         }
 
         try {
@@ -49,13 +49,13 @@ const AIAnalysis = {
 
             await Storage.updateDream(dream.id, { aiAnalysis: analysis });
             this.displayAnalysis(analysis);
-            Utils.showToast("AI analysis complete!", "success");
+            Utils.showToast(__("toast.aiComplete"), "success");
         } catch (err) {
-            Utils.showToast("AI analysis failed: " + err.message, "error");
+            Utils.showToast(__("toast.aiFailed") + " " + err.message, "error");
         } finally {
             if (btn) {
                 btn.disabled = false;
-                btn.textContent = "🧠 Analyze with AI";
+                btn.textContent = __("detail.analyze");
             }
         }
     },
@@ -63,13 +63,13 @@ const AIAnalysis = {
     displayAnalysis(analysis) {
         const set = (id, val) => {
             const el = document.getElementById(id);
-            if (el) el.textContent = val || "No analysis available.";
+            if (el) el.textContent = val || __("detail.noAI");
         };
 
         const setSymbols = (id, val) => {
             const el = document.getElementById(id);
             if (!el) return;
-            if (!val) { el.textContent = "No analysis available."; return; }
+            if (!val) { el.textContent = __("detail.noAI"); return; }
             const lines = val.split("\n").filter(l => l.trim());
             el.innerHTML = lines.map(line => {
                 const clean = line.replace(/^[\-\*\•\d\.]+\s*/, "").trim();
@@ -98,10 +98,10 @@ const AIAnalysis = {
         } else {
             ["dreamMood", "dreamSymbols", "dreamPatterns", "dreamSuggestions"].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.textContent = "No AI analysis yet.";
+                if (el) el.textContent = __("detail.noAI");
             });
             const deepEl = document.getElementById("dreamDeepAnalysis");
-            if (deepEl) deepEl.textContent = "No AI analysis yet.";
+            if (deepEl) deepEl.textContent = __("detail.noAI");
         }
     }
 };

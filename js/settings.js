@@ -21,6 +21,8 @@ const Settings = {
         if (nameEl) nameEl.value = user.name || "";
         if (emailEl) emailEl.value = user.email || "";
         this.loadHiddenDreams();
+        const langSel = document.getElementById("langSelect");
+        if (langSel) langSel.value = LANG.current;
     },
 
     async loadHiddenDreams() {
@@ -29,20 +31,20 @@ const Settings = {
         try {
             const dreams = await Storage.apiCall("/discover/hidden");
             if (dreams.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No hidden dreams.</p>';
+                container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">' + __("settings.hiddenEmpty") + '</p>';
                 return;
             }
             container.innerHTML = dreams.map(d => `
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);">
                     <div style="flex:1;min-width:0;">
-                        <p style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${Utils.escapeHtml(d.title || "Untitled")}</p>
-                        <p style="font-size:11px;color:var(--text-muted);">by ${Utils.escapeHtml(d.authorName || "Anonymous")}</p>
+                        <p style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${Utils.escapeHtml(d.title || __("settings.untitled"))}</p>
+                        <p style="font-size:11px;color:var(--text-muted);">${__("discover.by")} ${Utils.escapeHtml(d.authorName || __("discover.anonymous"))}</p>
                     </div>
                     <button class="btn btn-sm unhide-btn" data-id="${d._id}" style="width:auto;flex-shrink:0;">Unhide</button>
                 </div>
             `).join("");
         } catch (e) {
-            container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Failed to load.</p>';
+            container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">' + __("settings.failedLoad") + '</p>';
         }
     },
 
@@ -50,7 +52,7 @@ const Settings = {
         const name = document.getElementById("settingsName").value.trim();
         const email = document.getElementById("settingsEmail").value.trim();
         if (!name || !email) {
-            Utils.showToast("Name and email are required.", "error");
+            Utils.showToast(__("toast.nameEmailRequired"), "error");
             return;
         }
 
@@ -66,9 +68,9 @@ const Settings = {
             if (emailEl) emailEl.textContent = result.user.email;
             if (avatarEl) avatarEl.textContent = result.user.name.charAt(0).toUpperCase();
 
-            Utils.showToast("Profile updated!", "success");
+            Utils.showToast(__("settings.profileUpdated"), "success");
         } catch (e) {
-            Utils.showToast("Failed: " + e.message, "error");
+            Utils.showToast(__("toast.failed") + e.message, "error");
         }
     },
 
@@ -78,26 +80,26 @@ const Settings = {
         const confirm = document.getElementById("confirmPassword").value;
 
         if (!current || !newPass) {
-            Utils.showToast("Fill in all password fields.", "error");
+            Utils.showToast(__("toast.passFields"), "error");
             return;
         }
         if (newPass !== confirm) {
-            Utils.showToast("New passwords don't match.", "error");
+            Utils.showToast(__("toast.passMismatchNew"), "error");
             return;
         }
         if (newPass.length < 4) {
-            Utils.showToast("New password must be at least 4 characters.", "error");
+            Utils.showToast(__("toast.passShort"), "error");
             return;
         }
 
         try {
             await Storage.apiCall("/password", "PUT", { currentPassword: current, newPassword: newPass });
-            Utils.showToast("Password changed!", "success");
+            Utils.showToast(__("settings.passChanged"), "success");
             document.getElementById("currentPassword").value = "";
             document.getElementById("newPassword").value = "";
             document.getElementById("confirmPassword").value = "";
         } catch (e) {
-            Utils.showToast("Failed: " + e.message, "error");
+            Utils.showToast(__("toast.failed") + e.message, "error");
         }
     },
 
@@ -109,25 +111,25 @@ const Settings = {
 
         const emojis = (dream.feelings || []).map(f => f.split(" ")[0]).join(" ");
         const cats = Array.isArray(dream.category) ? dream.category : (dream.category ? [dream.category] : []);
-        let text = `Dream Journal\n`;
+        let text = `${__("settings.exportTitle")}\n`;
         text += `${"=".repeat(40)}\n\n`;
-        text += `Title: ${dream.title}\n`;
-        text += `Date: ${dream.date}\n`;
-        text += `Categories: ${cats.join(", ") || "None"}\n`;
-        text += `Feelings: ${emojis}\n`;
-        text += `Stars: ${dream.likes || 0}\n\n`;
+        text += `${__("settings.exportTitleLabel")}${dream.title}\n`;
+        text += `${__("settings.exportDate")}${dream.date}\n`;
+        text += `${__("settings.exportCategories")}${cats.join(", ") || __("settings.exportNone")}\n`;
+        text += `${__("settings.exportFeelings")}${emojis}\n`;
+        text += `${__("settings.exportStars")}${dream.likes || 0}\n\n`;
         text += `${"-".repeat(40)}\n\n`;
         text += `${dream.text}\n\n`;
 
         if (dream.aiAnalysis && typeof dream.aiAnalysis === "object") {
             text += `${"-".repeat(40)}\n`;
-            text += `AI ANALYSIS\n`;
+            text += `${__("settings.exportAIAnalysis")}\n`;
             text += `${"-".repeat(40)}\n\n`;
-            if (dream.aiAnalysis.mood) text += `Mood: ${dream.aiAnalysis.mood}\n\n`;
-            if (dream.aiAnalysis.symbols) text += `Symbols:\n${dream.aiAnalysis.symbols}\n\n`;
-            if (dream.aiAnalysis.patterns) text += `Patterns: ${dream.aiAnalysis.patterns}\n\n`;
-            if (dream.aiAnalysis.suggestions) text += `Suggestions: ${dream.aiAnalysis.suggestions}\n\n`;
-            if (dream.aiAnalysis.deepAnalysis) text += `Deep Analysis:\n${dream.aiAnalysis.deepAnalysis}\n`;
+            if (dream.aiAnalysis.mood) text += `${__("settings.exportMood")}${dream.aiAnalysis.mood}\n\n`;
+            if (dream.aiAnalysis.symbols) text += `${__("settings.exportSymbols")}\n${dream.aiAnalysis.symbols}\n\n`;
+            if (dream.aiAnalysis.patterns) text += `${__("settings.exportPatterns")}${dream.aiAnalysis.patterns}\n\n`;
+            if (dream.aiAnalysis.suggestions) text += `${__("settings.exportSuggestions")}${dream.aiAnalysis.suggestions}\n\n`;
+            if (dream.aiAnalysis.deepAnalysis) text += `${__("settings.exportDeepAnalysis")}\n${dream.aiAnalysis.deepAnalysis}\n`;
         }
 
         const blob = new Blob([text], { type: "text/plain" });
@@ -136,16 +138,16 @@ const Settings = {
         a.download = `dream-${dream.date || "export"}.txt`;
         a.click();
         URL.revokeObjectURL(a.href);
-        Utils.showToast("Dream exported!", "success");
+        Utils.showToast(__("settings.exported"), "success");
     },
 
     async unhideDream(id) {
         try {
             await Storage.apiCall(`/discover/${id}/unhide`, "POST");
-            Utils.showToast("Dream unhidden.", "success");
+            Utils.showToast(__("settings.unhidden"), "success");
             this.loadHiddenDreams();
         } catch (e) {
-            Utils.showToast("Failed: " + e.message, "error");
+            Utils.showToast(__("toast.failed") + e.message, "error");
         }
     }
 };

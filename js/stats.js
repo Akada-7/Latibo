@@ -24,11 +24,11 @@ const Stats = {
         const feelingCounts = Utils.countFeelings(dreams);
         const sorted = Object.entries(feelingCounts).sort((a, b) => b[1] - a[1]);
         const feelingText = sorted.map(([f, c]) => `<span style="display:inline-block;margin:3px 0;">${f} <span style="color:var(--accent);font-weight:600;">${c}</span></span>`).join(" &nbsp;·&nbsp; ");
-        if (el("feelingsStats")) el("feelingsStats").innerHTML = feelingText || "No data yet";
+        if (el("feelingsStats")) el("feelingsStats").innerHTML = feelingText || __("dash.noData");
 
         const categoryCounts = Utils.countCategories(dreams);
         const catText = Object.entries(categoryCounts).map(([c, n]) => `${c} <span style="color:var(--accent);font-weight:600;">${n}</span>`).join(" &nbsp;·&nbsp; ");
-        if (el("categoryStats")) el("categoryStats").innerHTML = catText || "No data yet";
+        if (el("categoryStats")) el("categoryStats").innerHTML = catText || __("dash.noData");
 
         this.renderCharts(dreams);
     },
@@ -126,7 +126,7 @@ const Stats = {
             data: {
                 labels: labels,
                 datasets: [{
-                    label: "Mood",
+                    label: __("dash.mood"),
                     data: values,
                     tension: 0.4,
                     fill: true,
@@ -218,14 +218,14 @@ const Stats = {
         const feelingCounts = Utils.countFeelings(dreams);
         const total = dreams.length || 1;
 
-        const labels = ["Creativity", "Fear", "Adventure", "Symbols", "Lucidity", "Positivity"];
+        const labels = [__("dash.creativity"), __("dash.fear"), __("dash.adventure"), __("dash.symbols"), __("dash.lucidity"), __("dash.positivity")];
         const mapping = {
-            "Creativity": ["😕 Confused", "🤩 Excited", "🤯 Shocked"],
-            "Fear": ["😨 Scared", "😰 Anxious"],
-            "Adventure": ["😊 Happy", "🤩 Excited", "😲 Amazed"],
-            "Symbols": ["😡 Angry", "🤯 Shocked", "😲 Amazed"],
-            "Lucidity": ["😌 Calm", "😴 Sleepy", "🥰 Loved"],
-            "Positivity": ["😊 Happy", "😌 Calm", "🥰 Loved", "🤩 Excited"]
+            [__("dash.creativity")]: ["😕 Confused", "🤩 Excited", "🤯 Shocked"],
+            [__("dash.fear")]: ["😨 Scared", "😰 Anxious"],
+            [__("dash.adventure")]: ["😊 Happy", "🤩 Excited", "😲 Amazed"],
+            [__("dash.symbols")]: ["😡 Angry", "🤯 Shocked", "😲 Amazed"],
+            [__("dash.lucidity")]: ["😌 Calm", "😴 Sleepy", "🥰 Loved"],
+            [__("dash.positivity")]: ["😊 Happy", "😌 Calm", "🥰 Loved", "🤩 Excited"]
         };
 
         const data = labels.map(label => {
@@ -240,7 +240,7 @@ const Stats = {
             data: {
                 labels: labels,
                 datasets: [{
-                    label: "Dream Profile",
+                    label: __("dash.dreamProfile"),
                     data: data,
                     fill: true,
                     backgroundColor: "rgba(124, 92, 255, 0.15)",

@@ -109,14 +109,14 @@ const Discover = {
         if (this.dreams.length === 0) {
             container.innerHTML = `
                 <div class="card" style="text-align:center;padding:40px;">
-                    <h3>No Shared Dreams Yet</h3>
-                    <p style="color:var(--text-muted);margin-top:8px;">Be the first to share your dream with the community!</p>
+                    <h3>${__("discover.empty")}</h3>
+                    <p style="color:var(--text-muted);margin-top:8px;">${__("discover.emptySub")}</p>
                 </div>
             `;
             return;
         }
 
-        container.innerHTML = this.dreams.map(dream => {
+            container.innerHTML = this.dreams.map(dream => {
             const emojis = (dream.feelings || []).map(f => f.split(" ")[0]).join(" ");
             const cats = Array.isArray(dream.category) ? dream.category : (dream.category ? [dream.category] : []);
             const categoryBadges = cats.map(c => `<span class="badge" style="font-size:10px;">${c}</span>`).join(" ");
@@ -132,9 +132,9 @@ const Discover = {
                 <div class="card" style="margin-bottom:16px;">
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
                         <div>
-                            <h3 style="margin:0;">🌙 ${Utils.escapeHtml(dream.title || "Untitled Dream")}</h3>
+                            <h3 style="margin:0;">🌙 ${Utils.escapeHtml(dream.title || __("discover.untitled"))}</h3>
                             <p style="color:var(--text-muted);font-size:12px;margin-top:4px;">
-                                by ${Utils.escapeHtml(dream.authorName || "Anonymous")} · ${new Date(dream.createdAt).toLocaleDateString()}
+                                ${__("discover.by")} ${Utils.escapeHtml(dream.authorName || __("discover.anonymous"))} · ${new Date(dream.createdAt).toLocaleDateString()}
                             </p>
                         </div>
                         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
@@ -144,14 +144,14 @@ const Discover = {
                     </div>
                     <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;margin-bottom:6px;">
                         ${finalText}
-                        ${truncated && !isExpanded ? `<span class="dream-toggle" data-id="${dream._id}" style="color:var(--accent);cursor:pointer;font-weight:500;"> devamı</span>` : ""}
-                        ${isExpanded ? `<span class="dream-toggle" data-id="${dream._id}" style="color:var(--accent);cursor:pointer;font-weight:500;font-size:13px;"> daha az</span>` : ""}
+                        ${truncated && !isExpanded ? `<span class="dream-toggle" data-id="${dream._id}" style="color:var(--accent);cursor:pointer;font-weight:500;"> ${__("discover.devami")}</span>` : ""}
+                        ${isExpanded ? `<span class="dream-toggle" data-id="${dream._id}" style="color:var(--accent);cursor:pointer;font-weight:500;font-size:13px;"> ${__("discover.dahaAz")}</span>` : ""}
                     </p>
                     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
                         <div style="display:flex;align-items:center;gap:8px;">
                             <span style="font-size:13px;">${emojis}</span>
                             <button class="btn-icon comment-toggle-btn" data-id="${dream._id}" style="font-size:13px;">💬 ${comments.length || 0}</button>
-                            <button class="btn-icon report-btn" data-id="${dream._id}" style="font-size:12px;color:var(--text-muted);" title="Report">🚩</button>
+                            <button class="btn-icon report-btn" data-id="${dream._id}" style="font-size:12px;color:var(--text-muted);" title="${__("discover.report")}">🚩</button>
                         </div>
                         <button class="btn-icon" onclick="Discover.likeShared('${dream._id}')" style="font-size:14px;${likeStyle}">${isLiked ? '⭐' : '☆'} ${dream.likes || 0}</button>
                     </div>
@@ -174,11 +174,11 @@ const Discover = {
         return `
             <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-color);">
                 <div style="margin-bottom:8px;max-height:200px;overflow-y:auto;">
-                    ${commentsHtml || '<p style="color:var(--text-muted);font-size:13px;">No comments yet.</p>'}
+                    ${commentsHtml || `<p style="color:var(--text-muted);font-size:13px;">${__("discover.noComments")}</p>`}
                 </div>
                 <div style="display:flex;gap:8px;">
-                    <input type="text" class="input comment-input" data-id="${dream._id}" placeholder="Write a comment..." style="flex:1;padding:8px 12px;font-size:13px;" ${!Storage.getToken() ? 'disabled title="Log in to comment"' : ""}>
-                    <button class="btn btn-sm btn-primary comment-submit-btn" data-id="${dream._id}" style="width:auto;" ${!Storage.getToken() ? 'disabled' : ""}>Send</button>
+                    <input type="text" class="input comment-input" data-id="${dream._id}" placeholder="${__("discover.commentPlaceholder")}" style="flex:1;padding:8px 12px;font-size:13px;" ${!Storage.getToken() ? `disabled title="${__("discover.loginComment")}"` : ""}>
+                    <button class="btn btn-sm btn-primary comment-submit-btn" data-id="${dream._id}" style="width:auto;" ${!Storage.getToken() ? 'disabled' : ""}>${__("discover.send")}</button>
                 </div>
             </div>
         `;
@@ -186,7 +186,7 @@ const Discover = {
 
     async addComment(id) {
         if (!Storage.getToken()) {
-            Utils.showToast("Log in to comment.", "error");
+            Utils.showToast(__("toast.loginComment"), "error");
             return;
         }
         const input = document.querySelector(`.comment-input[data-id="${id}"]`);
@@ -206,7 +206,7 @@ const Discover = {
                 if (newInput) newInput.focus();
             }, 100);
         } catch (e) {
-            Utils.showToast("Failed: " + e.message, "error");
+            Utils.showToast(__("toast.failed") + e.message, "error");
         }
     },
 
@@ -219,22 +219,22 @@ const Discover = {
         overlay.id = "reportModal";
         overlay.innerHTML = `
             <div class="modal">
-                <h2>🚩 Report Dream</h2>
+                <h2>${__("discover.report")}</h2>
                 <div class="form-group" style="margin-bottom:16px;">
-                    <label>Reason</label>
+                    <label>${__("discover.reportReason")}</label>
                     <select id="reportReason" class="input">
-                        <option value="I didn't like this dream">😕 I didn't like this dream</option>
-                        <option value="Inappropriate content">Inappropriate content</option>
-                        <option value="Spam">Spam</option>
-                        <option value="Harassment">Harassment</option>
-                        <option value="Not dream related">Not dream related</option>
-                        <option value="Other">Other</option>
+                        <option value="I didn't like this dream">😕 ${__("discover.hidden")}</option>
+                        <option value="Inappropriate content">${__("discover.reportInappropriate")}</option>
+                        <option value="Spam">${__("discover.reportSpam")}</option>
+                        <option value="Harassment">${__("discover.reportHarassment")}</option>
+                        <option value="Not dream related">${__("discover.reportNotDream")}</option>
+                        <option value="Other">${__("discover.reportOther")}</option>
                     </select>
                 </div>
-                <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Reporting will hide this dream from your feed.</p>
+                <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">${__("discover.reportNote")}</p>
                 <div style="display:flex;gap:10px;justify-content:flex-end;">
-                    <button class="btn report-cancel-btn" style="width:auto;">Cancel</button>
-                    <button class="btn btn-primary report-submit-btn" style="width:auto;">Report & Hide</button>
+                    <button class="btn report-cancel-btn" style="width:auto;">${__("discover.reportCancel")}</button>
+                    <button class="btn btn-primary report-submit-btn" style="width:auto;">${__("discover.reportSubmit")}</button>
                 </div>
                 <input type="hidden" class="report-dream-id" value="${id}">
             </div>
@@ -265,10 +265,10 @@ const Discover = {
             await Storage.apiCall(`/discover/${id}/report`, "POST", { reason });
             this.dreams = this.dreams.filter(d => d._id !== id);
             this.render();
-            Utils.showToast("Dream reported and hidden.", "success");
+            Utils.showToast(__("discover.reported"), "success");
             overlay.remove();
         } catch (e) {
-            Utils.showToast("Failed: " + e.message, "error");
+        Utils.showToast(__("toast.failed") + e.message, "error");
         }
     },
 
@@ -301,17 +301,17 @@ const Discover = {
             });
 
             if (btn) {
-                btn.textContent = "🔗 Shared";
+                btn.textContent = __("detail.sharedBtn");
                 btn.dataset.shared = result._id;
                 btn.classList.add("btn-primary");
             }
 
-            Utils.showToast("Dream shared with the community!", "success");
+            Utils.showToast(__("toast.shareSuccess"), "success");
         } catch (e) {
             if (e.message.includes("zaten")) {
-                Utils.showToast("This dream is already shared.", "info");
+                Utils.showToast(__("discover.alreadyShared"), "info");
             } else {
-                Utils.showToast("Failed to share: " + e.message, "error");
+                    Utils.showToast(__("toast.failedShare") + e.message, "error");
             }
         }
     },
@@ -322,12 +322,12 @@ const Discover = {
 
         try {
             await Storage.apiCall(`/dreams/share/${btn.dataset.shared}`, "DELETE");
-            btn.textContent = "🔗 Share";
+            btn.textContent = __("detail.shareBtn");
             delete btn.dataset.shared;
             btn.classList.remove("btn-primary");
-            Utils.showToast("Dream unshared.", "info");
+            Utils.showToast(__("discover.unshared"), "info");
         } catch (e) {
-            Utils.showToast("Failed to unshare.", "error");
+            Utils.showToast(__("toast.failedUnshare"), "error");
         }
     },
 
@@ -338,16 +338,16 @@ const Discover = {
         try {
             const result = await Storage.apiCall(`/dreams/${dreamId}/shared`);
             if (result.shared) {
-                btn.textContent = "🔗 Shared";
+                btn.textContent = __("detail.sharedBtn");
                 btn.dataset.shared = result.sharedId;
                 btn.classList.add("btn-primary");
             } else {
-                btn.textContent = "🔗 Share";
+                btn.textContent = __("detail.shareBtn");
                 delete btn.dataset.shared;
                 btn.classList.remove("btn-primary");
             }
         } catch (e) {
-            btn.textContent = "🔗 Share";
+            btn.textContent = __("detail.shareBtn");
             delete btn.dataset.shared;
             btn.classList.remove("btn-primary");
         }
@@ -355,7 +355,7 @@ const Discover = {
 
     async likeShared(id) {
         if (!Storage.getToken()) {
-            Utils.showToast("Log in to like dreams.", "error");
+            Utils.showToast(__("toast.loginLike"), "error");
             return;
         }
 
@@ -370,7 +370,7 @@ const Discover = {
             if (dream) dream.likes = result.likes;
             this.render();
         } catch (e) {
-            Utils.showToast("Failed to like.", "error");
+            Utils.showToast(__("toast.failedLike"), "error");
         }
     }
 };

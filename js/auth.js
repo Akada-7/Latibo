@@ -28,17 +28,17 @@ const Auth = {
         const password = document.getElementById("regPassword").value;
 
         if (!name || !email || !password) {
-            Utils.showToast("Please fill in all fields.", "error");
+            Utils.showToast(__("toast.fillAll"), "error");
             return;
         }
         if (password.length < 4) {
-            Utils.showToast("Password must be at least 4 characters.", "error");
+            Utils.showToast(__("toast.passShort"), "error");
             return;
         }
 
         try {
             await Storage.register(name, email, password);
-            Utils.showToast("Welcome! Your account has been created.", "success");
+            Utils.showToast(__("toast.welcomeAccount"), "success");
             App.showApp();
         } catch (err) {
             Utils.showToast(err.message, "error");
@@ -50,13 +50,13 @@ const Auth = {
         const password = document.getElementById("loginPassword").value;
 
         if (!email || !password) {
-            Utils.showToast("Please fill in all fields.", "error");
+            Utils.showToast(__("toast.fillAll"), "error");
             return;
         }
 
         try {
             await Storage.login(email, password);
-            Utils.showToast("Welcome back!", "success");
+            Utils.showToast(__("toast.welcomeBack"), "success");
             App.showApp();
         } catch (err) {
             Utils.showToast(err.message, "error");
@@ -65,7 +65,7 @@ const Auth = {
 
     handleLogout() {
         Storage.clearUser();
-        Utils.showToast("Logged out.", "info");
+        Utils.showToast(__("toast.loggedOut"), "info");
         App.showAuth();
     },
 

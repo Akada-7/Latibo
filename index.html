@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Dream App</title>
+    <title data-i18n="app.name">Dream App</title>
     <meta name="description" content="Record, analyze and discover patterns in your dreams">
     <meta name="theme-color" content="#7c5cff">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,41 +30,41 @@
 <div id="authPage" class="auth-page">
     <div class="auth-card">
         <div id="loginView">
-            <h1>🌙 Dream App</h1>
-            <p class="subtitle">Welcome back. Log in to your journal.</p>
+            <h1 data-i18n="app.title">🌙 Dream App</h1>
+            <p class="subtitle" data-i18n="auth.welcome">Welcome back. Log in to your journal.</p>
             <form id="loginForm" class="auth-form">
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="loginEmail" class="input" placeholder="your@email.com" required>
+                    <label data-i18n="auth.email">Email</label>
+                    <input type="email" id="loginEmail" class="input" data-i18n-placeholder="auth.emailPlaceholder" placeholder="your@email.com" required>
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" class="input" placeholder="Your password" required>
+                    <label data-i18n="auth.password">Password</label>
+                    <input type="password" id="loginPassword" class="input" data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Your password" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Log In</button>
+                <button type="submit" class="btn btn-primary" data-i18n="auth.login">Log In</button>
             </form>
-            <p class="auth-footer">Don't have an account? <a href="#" onclick="document.getElementById('loginView').style.display='none';document.getElementById('registerView').style.display='block';return false;">Sign up</a></p>
+            <p class="auth-footer"><span data-i18n="auth.noAccount">Don't have an account?</span> <a href="#" onclick="document.getElementById('loginView').style.display='none';document.getElementById('registerView').style.display='block';return false;" data-i18n="auth.register">Sign up</a></p>
         </div>
 
         <div id="registerView" style="display:none;">
-            <h1>🌙 Dream App</h1>
-            <p class="subtitle">Create an account to start journaling.</p>
+            <h1 data-i18n="app.title">🌙 Dream App</h1>
+            <p class="subtitle" data-i18n="auth.create">Create an account to start journaling.</p>
             <form id="registerForm" class="auth-form">
                 <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" id="regName" class="input" placeholder="Your name" required>
+                    <label data-i18n="auth.name">Name</label>
+                    <input type="text" id="regName" class="input" data-i18n-placeholder="auth.namePlaceholder" placeholder="Your name" required>
                 </div>
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="regEmail" class="input" placeholder="your@email.com" required>
+                    <label data-i18n="auth.email">Email</label>
+                    <input type="email" id="regEmail" class="input" data-i18n-placeholder="auth.emailPlaceholder" placeholder="your@email.com" required>
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="regPassword" class="input" placeholder="Min 4 characters" required>
+                    <label data-i18n="auth.password">Password</label>
+                    <input type="password" id="regPassword" class="input" data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Min 4 characters" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Create Account</button>
+                <button type="submit" class="btn btn-primary" data-i18n="auth.createAccount">Create Account</button>
             </form>
-            <p class="auth-footer">Already have an account? <a href="#" onclick="document.getElementById('registerView').style.display='none';document.getElementById('loginView').style.display='block';return false;">Log in</a></p>
+            <p class="auth-footer"><span data-i18n="auth.hasAccount">Already have an account?</span> <a href="#" onclick="document.getElementById('registerView').style.display='none';document.getElementById('loginView').style.display='block';return false;" data-i18n="auth.login">Log in</a></p>
         </div>
     </div>
 </div>
@@ -75,7 +75,7 @@
     <!-- MOBILE HEADER -->
     <div class="mobile-header">
         <button id="menuToggleMobile" class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('active')">☰</button>
-        <h2>🌙 Dream Journal</h2>
+        <h2 data-i18n="app.title">🌙 Dream Journal</h2>
         <button id="themeToggleMobile" class="theme-toggle" title="Toggle theme">☀️</button>
     </div>
     <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('open');this.classList.remove('active')"></div>
@@ -83,7 +83,7 @@
     <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>🌙 Dream Journal</h2>
+            <h2 data-i18n="app.title">🌙 Dream Journal</h2>
             <div style="display:flex;gap:8px;align-items:center;">
                 <button id="menuToggle" class="menu-toggle" onclick="document.querySelector('.sidebar').classList.remove('open');document.querySelector('.sidebar-overlay').classList.remove('active')">✕</button>
                 <button id="themeToggle" class="theme-toggle" title="Toggle theme">☀️</button>
@@ -91,30 +91,30 @@
         </div>
 
         <div class="sidebar-section">
-            <button id="newDreamBtn" class="btn btn-primary">+ New Dream</button>
+            <button id="newDreamBtn" class="btn btn-primary" data-i18n="nav.newDream">+ New Dream</button>
         </div>
 
         <div class="sidebar-section">
             <div class="sidebar-nav">
-                <button class="nav-item active" data-page="dashboard">📊 Dashboard</button>
-                <button class="nav-item" data-page="discover">🌍 Discover Dreams</button>
-                <button class="nav-item" data-page="recurring">🔁 Recurring Dreams</button>
-                <button class="nav-item" data-page="settings">⚙️ Settings</button>
+                <button class="nav-item active" data-page="dashboard" data-i18n="nav.dashboard">📊 Dashboard</button>
+                <button class="nav-item" data-page="discover" data-i18n="nav.discover">🌍 Discover Dreams</button>
+                <button class="nav-item" data-page="recurring" data-i18n="nav.recurring">🔁 Recurring Dreams</button>
+                <button class="nav-item" data-page="settings" data-i18n="nav.settings">⚙️ Settings</button>
             </div>
         </div>
 
         <div class="sidebar-section">
-            <h3>⭐ Dream of the Week</h3>
-            <div id="weeklyDream" class="weekly-dream-box">No dream yet</div>
+            <h3 data-i18n="nav.dreamOfWeek">⭐ Dream of the Week</h3>
+            <div id="weeklyDream" class="weekly-dream-box" data-i18n="nav.noDream">No dream yet</div>
         </div>
 
         <div class="sidebar-section">
-            <h3>Search</h3>
-            <input type="text" id="searchBox" class="input" placeholder="Search dreams...">
+            <h3 data-i18n="nav.search">Search</h3>
+            <input type="text" id="searchBox" class="input" data-i18n-placeholder="nav.searchPlaceholder" placeholder="Search dreams...">
         </div>
 
         <div class="sidebar-section" style="flex:1; overflow:hidden; display:flex; flex-direction:column;">
-            <h3>Recent Dreams</h3>
+            <h3 data-i18n="nav.recent">Recent Dreams</h3>
             <div id="dreamList" class="dream-list"></div>
         </div>
 
@@ -124,7 +124,7 @@
                 <div class="user-name" id="userName">User</div>
                 <div class="user-email" id="userEmail">user@email.com</div>
             </div>
-            <button id="logoutBtn" class="btn-icon" title="Logout">🚪</button>
+            <button id="logoutBtn" class="btn-icon" data-i18n-title="nav.logout" title="Logout">🚪</button>
         </div>
     </div>
 
@@ -133,45 +133,45 @@
 
         <!-- ===== DASHBOARD PAGE ===== -->
         <div id="page-dashboard" class="page active">
-            <h1>🌙 Your Dream Journey</h1>
-            <p style="color:var(--text-muted);">Your dreams, patterns and memories</p>
+            <h1 data-i18n="dash.title">🌙 Your Dream Journey</h1>
+            <p style="color:var(--text-muted);" data-i18n="dash.subtitle">Your dreams, patterns and memories</p>
 
             <div class="stats-grid">
                 <div class="stat-card">
                     <h2 id="totalDreams">0</h2>
-                    <p>Dreams</p>
+                    <p data-i18n="dash.dreams">Dreams</p>
                 </div>
                 <div class="stat-card">
                     <h2 id="totalLikes">0</h2>
-                    <p>⭐ Stars</p>
+                    <p data-i18n="dash.stars">⭐ Stars</p>
                 </div>
                 <div class="stat-card">
                     <h2 id="totalWords">0</h2>
-                    <p>Words</p>
+                    <p data-i18n="dash.words">Words</p>
                 </div>
                 <div class="stat-card">
                     <h2 id="streak">0</h2>
-                    <p>🔥 Streak</p>
+                    <p data-i18n="dash.streak">🔥 Streak</p>
                 </div>
             </div>
 
-            <h2>🧠 AI Dream Analysis</h2>
+            <h2 data-i18n="dash.aiAnalysis">🧠 AI Dream Analysis</h2>
 
             <div class="analysis-grid">
                 <div class="analysis-card">
-                    <h3>😊 Most Felt Feelings</h3>
-                    <p id="feelingsStats">No data yet</p>
+                    <h3 data-i18n="dash.feelings">😊 Most Felt Feelings</h3>
+                    <p id="feelingsStats" data-i18n="dash.noData">No data yet</p>
                 </div>
                 <div class="analysis-card">
-                    <h3>📂 Categories</h3>
-                    <p id="categoryStats">No data yet</p>
+                    <h3 data-i18n="dash.categories">📂 Categories</h3>
+                    <p id="categoryStats" data-i18n="dash.noData">No data yet</p>
                 </div>
                 <div class="analysis-card">
-                    <h3>😊 Emotional Balance</h3>
+                    <h3 data-i18n="dash.emotions">😊 Emotional Balance</h3>
                     <canvas id="emotionChart"></canvas>
                 </div>
                 <div class="analysis-card">
-                    <h3>📡 Dream Profile</h3>
+                    <h3 data-i18n="dash.profile">📡 Dream Profile</h3>
                     <canvas id="radarChart"></canvas>
                 </div>
             </div>
@@ -179,12 +179,12 @@
 
         <!-- ===== DISCOVER DREAMS PAGE ===== -->
         <div id="page-discover" class="page">
-            <h1>🌍 Discover Dreams</h1>
-            <p style="color:var(--text-muted);margin-bottom:16px;">Explore dreams shared by the community</p>
+            <h1 data-i18n="discover.title">🌍 Discover Dreams</h1>
+            <p style="color:var(--text-muted);margin-bottom:16px;" data-i18n="discover.subtitle">Explore dreams shared by the community</p>
             <div class="discover-toolbar" style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
-                <input type="text" id="discoverSearch" class="input" placeholder="Search dreams..." style="flex:1;min-width:200px;">
+                <input type="text" id="discoverSearch" class="input" data-i18n-placeholder="discover.searchPlaceholder" placeholder="Search dreams..." style="flex:1;min-width:200px;">
                 <select id="discoverFilter" class="input" style="width:auto;min-width:150px;">
-                    <option value="">All Categories</option>
+                    <option value="" data-i18n="discover.all">All Categories</option>
                     <option value="Lucid">🧠 Lucid</option>
                     <option value="Nature">🌿 Nature</option>
                     <option value="City">🏙️ City</option>
@@ -200,11 +200,11 @@
 
         <!-- ===== EDITOR PAGE ===== -->
         <div id="page-editor" class="page">
-            <h1>Today's Dream</h1>
-            <p style="color:var(--text-muted);margin-bottom:16px;">Write down your dream while the memory is fresh.</p>
+            <h1 data-i18n="editor.title">Today's Dream</h1>
+            <p style="color:var(--text-muted);margin-bottom:16px;" data-i18n="editor.subtitle">Write down your dream while the memory is fresh.</p>
 
             <div class="voice-controls">
-                <button id="voiceBtn" class="btn voice-btn" style="width:auto;">🎙️ Sesli Giriş</button>
+                <button id="voiceBtn" class="btn voice-btn" style="width:auto;" data-i18n="editor.voice">🎙️ Sesli Giriş</button>
                 <button id="voiceLangBtn" class="btn btn-sm" style="width:auto;">🇹🇷 TR</button>
                 <div id="voiceIndicator" class="voice-indicator">
                     <span class="voice-dot"></span>
@@ -213,10 +213,10 @@
             </div>
             <div id="voicePreview"></div>
 
-            <textarea id="ruya" class="input" style="min-height:280px;margin-top:10px;" placeholder="Write your dream here..."></textarea>
+            <textarea id="ruya" class="input" style="min-height:280px;margin-top:10px;" data-i18n-placeholder="editor.writePlaceholder" placeholder="Write your dream here..."></textarea>
 
             <div class="sidebar-section" style="margin-top:16px;">
-                <h3>Category</h3>
+                <h3 data-i18n="editor.category">Category</h3>
                 <div class="category-select">
                     <button class="category-btn category-btn-lucid" data-category="Lucid">🧠 Lucid</button>
                     <button class="category-btn" data-category="Nature">🌿 Nature</button>
@@ -226,97 +226,97 @@
                     <button class="category-btn" data-category="Fantasy">🐉 Fantasy</button>
                     <button class="category-btn" data-category="Abstract">🎭 Abstract</button>
                     <button class="category-btn" data-category="People">👥 People</button>
-                    <button class="category-btn" data-category="Other">💫 Other</button>
+                    <button class="category-btn" data-category="Other" data-i18n="editor.other">💫 Other</button>
                 </div>
-                <input type="text" id="otherCategoryInput" class="input" placeholder="Type your category..." style="display:none;margin-top:10px;max-width:300px;">
+                <input type="text" id="otherCategoryInput" class="input" data-i18n-placeholder="editor.otherPlaceholder" placeholder="Type your category..." style="display:none;margin-top:10px;max-width:300px;">
             </div>
 
             <div style="display:flex;gap:10px;margin-top:16px;">
-                <button id="openTagsBtn" class="btn btn-primary" style="width:auto;">🏷️ Tags & Save</button>
+                <button id="openTagsBtn" class="btn btn-primary" style="width:auto;" data-i18n="editor.tagsSave">🏷️ Tags & Save</button>
             </div>
         </div>
 
         <!-- ===== TAGS PAGE ===== -->
         <div id="page-tags" class="page">
-            <h1>🏷️ Dream Tags</h1>
-            <p style="color:var(--text-muted);">How were you feeling in this dream?</p>
+            <h1 data-i18n="tags.title">🏷️ Dream Tags</h1>
+            <p style="color:var(--text-muted);" data-i18n="tags.subtitle">How were you feeling in this dream?</p>
 
             <div class="emotion-grid">
-                <button class="emotion-btn">😊 Happy</button>
-                <button class="emotion-btn">😌 Calm</button>
-                <button class="emotion-btn">😨 Scared</button>
-                <button class="emotion-btn">😰 Anxious</button>
-                <button class="emotion-btn">😢 Sad</button>
-                <button class="emotion-btn">😡 Angry</button>
-                <button class="emotion-btn">😕 Confused</button>
-                <button class="emotion-btn">🤯 Shocked</button>
-                <button class="emotion-btn">🤩 Excited</button>
-                <button class="emotion-btn">🥰 Loved</button>
-                <button class="emotion-btn">😲 Amazed</button>
-                <button class="emotion-btn">😇 Peaceful</button>
-                <button class="emotion-btn">💪 Empowered</button>
-                <button class="emotion-btn">🤔 Puzzled</button>
-                <button class="emotion-btn">🥺 Nostalgic</button>
-                <button class="emotion-btn">😈 Mischievous</button>
-                <button class="emotion-btn">😶 Numb</button>
-                <button class="emotion-btn">💫 Euphoric</button>
+                <button class="emotion-btn" data-feeling="😊 Happy" data-i18n="feelings.happy">😊 Happy</button>
+                <button class="emotion-btn" data-feeling="😌 Calm" data-i18n="feelings.calm">😌 Calm</button>
+                <button class="emotion-btn" data-feeling="😨 Scared" data-i18n="feelings.scared">😨 Scared</button>
+                <button class="emotion-btn" data-feeling="😰 Anxious" data-i18n="feelings.anxious">😰 Anxious</button>
+                <button class="emotion-btn" data-feeling="😢 Sad" data-i18n="feelings.sad">😢 Sad</button>
+                <button class="emotion-btn" data-feeling="😡 Angry" data-i18n="feelings.angry">😡 Angry</button>
+                <button class="emotion-btn" data-feeling="😕 Confused" data-i18n="feelings.confused">😕 Confused</button>
+                <button class="emotion-btn" data-feeling="🤯 Shocked" data-i18n="feelings.shocked">🤯 Shocked</button>
+                <button class="emotion-btn" data-feeling="🤩 Excited" data-i18n="feelings.excited">🤩 Excited</button>
+                <button class="emotion-btn" data-feeling="🥰 Loved" data-i18n="feelings.loved">🥰 Loved</button>
+                <button class="emotion-btn" data-feeling="😲 Amazed" data-i18n="feelings.amazed">😲 Amazed</button>
+                <button class="emotion-btn" data-feeling="😇 Peaceful" data-i18n="feelings.peaceful">😇 Peaceful</button>
+                <button class="emotion-btn" data-feeling="💪 Empowered" data-i18n="feelings.empowered">💪 Empowered</button>
+                <button class="emotion-btn" data-feeling="🤔 Puzzled" data-i18n="feelings.puzzled">🤔 Puzzled</button>
+                <button class="emotion-btn" data-feeling="🥺 Nostalgic" data-i18n="feelings.nostalgic">🥺 Nostalgic</button>
+                <button class="emotion-btn" data-feeling="😈 Mischievous" data-i18n="feelings.mischievous">😈 Mischievous</button>
+                <button class="emotion-btn" data-feeling="😶 Numb" data-i18n="feelings.numb">😶 Numb</button>
+                <button class="emotion-btn" data-feeling="💫 Euphoric" data-i18n="feelings.euphoric">💫 Euphoric</button>
             </div>
 
             <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding:12px 16px;background:var(--bg-tertiary);border-radius:var(--radius-md);border:1px solid var(--border-color);">
                 <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--text-secondary);">
                     <input type="checkbox" id="nsfwToggle" style="width:18px;height:18px;accent-color:var(--danger);cursor:pointer;">
-                    ⚠️ Bu rüya rahatsız edici unsurlar içeriyor (NSFW)
+                    <span data-i18n="editor.nsfw">⚠️ Bu rüya rahatsız edici unsurlar içeriyor (NSFW)</span>
                 </label>
             </div>
 
             <div style="display:flex;gap:10px;margin-top:16px;">
-                <button id="finishDreamBtn" class="btn btn-primary" style="width:auto;">✅ Save Dream</button>
-                <button class="btn" style="width:auto;" onclick="App.navigateTo('editor')">← Back</button>
+                <button id="finishDreamBtn" class="btn btn-primary" style="width:auto;" data-i18n="tags.save">✅ Save Dream</button>
+                <button class="btn" style="width:auto;" onclick="App.navigateTo('editor')" data-i18n="tags.back">← Back</button>
             </div>
         </div>
 
         <!-- ===== DETAILS PAGE ===== -->
         <div id="page-details" class="page">
-            <h1>🌙 Dream Details</h1>
+            <h1 data-i18n="detail.title">🌙 Dream Details</h1>
             <div class="detail-buttons" style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;">
-                <span class="badge" id="detailCategory">Uncategorized</span>
-                <button id="analyzeBtn" class="btn btn-sm btn-primary" style="width:auto;">🧠 Analyze with AI</button>
-                <button id="shareDreamBtn" class="btn btn-sm" style="width:auto;">🔗 Share</button>
-                <button id="exportDreamBtn" class="btn btn-sm" style="width:auto;">📄 Export</button>
-                <button class="btn btn-sm" style="width:auto;" onclick="App.navigateTo('dashboard')">← Back</button>
+                <span class="badge" id="detailCategory" data-i18n="detail.uncategorized">Uncategorized</span>
+                <button id="analyzeBtn" class="btn btn-sm btn-primary" style="width:auto;" data-i18n="detail.analyze">🧠 Analyze with AI</button>
+                <button id="shareDreamBtn" class="btn btn-sm" style="width:auto;" data-i18n="detail.share">🔗 Share</button>
+                <button id="exportDreamBtn" class="btn btn-sm" style="width:auto;" data-i18n="detail.export">📄 Export</button>
+                <button class="btn btn-sm" style="width:auto;" onclick="App.navigateTo('dashboard')" data-i18n="detail.back">← Back</button>
             </div>
 
             <div class="detail-layout">
                 <div class="detail-text-box">
-                    <h2>Dream</h2>
+                    <h2 data-i18n="detail.dream">Dream</h2>
                     <p id="detailDreamText"></p>
                     <textarea id="editDetailText" style="display:none;"></textarea>
                     <div class="detail-feelings" id="detailFeelings"></div>
-                    <button id="detailSaveBtn" class="btn btn-primary btn-sm" style="display:none;margin-top:14px;width:auto;">Save Changes</button>
+                    <button id="detailSaveBtn" class="btn btn-primary btn-sm" style="display:none;margin-top:14px;width:auto;" data-i18n="detail.saveChanges">Save Changes</button>
                 </div>
 
                 <div class="detail-analysis-box">
-                    <h2>🧠 AI Insights</h2>
+                    <h2 data-i18n="detail.insights">🧠 AI Insights</h2>
                     <div class="analysis-grid" style="margin-top:0;">
                         <div class="analysis-card" style="grid-column: span 2;">
-                            <h3>🔍 Deep Analysis</h3>
-                            <p id="dreamDeepAnalysis">No AI analysis yet.</p>
+                            <h3 data-i18n="detail.deepAnalysis">🔍 Deep Analysis</h3>
+                            <p id="dreamDeepAnalysis" data-i18n="detail.noAI">No AI analysis yet.</p>
                         </div>
                         <div class="analysis-card">
-                            <h3>💡 Suggestions</h3>
-                            <p id="dreamSuggestions">No AI analysis yet.</p>
+                            <h3 data-i18n="detail.suggestions">💡 Suggestions</h3>
+                            <p id="dreamSuggestions" data-i18n="detail.noAI">No AI analysis yet.</p>
                         </div>
                         <div class="analysis-card">
-                            <h3>🌙 Symbols</h3>
-                            <p id="dreamSymbols">No AI analysis yet.</p>
+                            <h3 data-i18n="detail.symbols">🌙 Symbols</h3>
+                            <p id="dreamSymbols" data-i18n="detail.noAI">No AI analysis yet.</p>
                         </div>
                         <div class="analysis-card">
-                            <h3>😊 Mood</h3>
-                            <p id="dreamMood">No AI analysis yet.</p>
+                            <h3 data-i18n="detail.mood">😊 Mood</h3>
+                            <p id="dreamMood" data-i18n="detail.noAI">No AI analysis yet.</p>
                         </div>
                         <div class="analysis-card">
-                            <h3>🔄 Patterns</h3>
-                            <p id="dreamPatterns">No AI analysis yet.</p>
+                            <h3 data-i18n="detail.patterns">🔄 Patterns</h3>
+                            <p id="dreamPatterns" data-i18n="detail.noAI">No AI analysis yet.</p>
                         </div>
                     </div>
                 </div>
@@ -325,61 +325,71 @@
 
         <!-- ===== RECURRING DREAMS PAGE ===== -->
         <div id="page-recurring" class="page">
-            <h1>🔁 Recurring Dream Patterns</h1>
-            <p style="color:var(--text-muted);margin-bottom:16px;">Discover similar themes and patterns across your dreams.</p>
+            <h1 data-i18n="recurring.title">🔁 Recurring Dream Patterns</h1>
+            <p style="color:var(--text-muted);margin-bottom:16px;" data-i18n="recurring.subtitle">Discover similar themes and patterns across your dreams.</p>
 
-            <button id="findRecurringBtn" class="btn btn-primary" style="width:auto;margin-bottom:20px;">🔍 Find Recurring Patterns</button>
+            <button id="findRecurringBtn" class="btn btn-primary" style="width:auto;margin-bottom:20px;" data-i18n="recurring.find">🔍 Find Recurring Patterns</button>
 
             <div id="recurringList"></div>
         </div>
 
         <!-- ===== SETTINGS PAGE ===== -->
         <div id="page-settings" class="page">
-            <h1>⚙️ Settings</h1>
-            <p style="color:var(--text-muted);margin-bottom:24px;">Manage your account and preferences</p>
+            <h1 data-i18n="settings.title">⚙️ Settings</h1>
+            <p style="color:var(--text-muted);margin-bottom:24px;" data-i18n="settings.subtitle">Manage your account and preferences</p>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;" class="settings-grid">
+            <div class="settings-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
                 <div class="card" style="margin-bottom:0;">
-                    <h2>👤 Profile</h2>
+                    <h2 data-i18n="settings.profile">👤 Profile</h2>
                     <div class="form-group" style="margin-bottom:12px;">
-                        <label>Name</label>
-                        <input type="text" id="settingsName" class="input" placeholder="Your name">
+                        <label data-i18n="settings.name">Name</label>
+                        <input type="text" id="settingsName" class="input" data-i18n-placeholder="settings.namePlaceholder" placeholder="Your name">
                     </div>
                     <div class="form-group" style="margin-bottom:16px;">
-                        <label>Email</label>
-                        <input type="email" id="settingsEmail" class="input" placeholder="Your email">
+                        <label data-i18n="settings.email">Email</label>
+                        <input type="email" id="settingsEmail" class="input" data-i18n-placeholder="settings.emailPlaceholder" placeholder="Your email">
                     </div>
-                    <button id="saveProfileBtn" class="btn btn-primary" style="width:auto;">Save Profile</button>
+                    <button id="saveProfileBtn" class="btn btn-primary" style="width:auto;" data-i18n="settings.saveProfile">Save Profile</button>
                 </div>
 
                 <div class="card" style="margin-bottom:0;">
-                    <h2>🔒 Change Password</h2>
+                    <h2 data-i18n="settings.password">🔒 Change Password</h2>
                     <div class="form-group" style="margin-bottom:12px;">
-                        <label>Current Password</label>
-                        <input type="password" id="currentPassword" class="input" placeholder="Current password">
+                        <label data-i18n="settings.currentPass">Current Password</label>
+                        <input type="password" id="currentPassword" class="input" data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Current password">
                     </div>
                     <div class="form-group" style="margin-bottom:12px;">
-                        <label>New Password</label>
-                        <input type="password" id="newPassword" class="input" placeholder="New password (min 4 chars)">
+                        <label data-i18n="settings.newPass">New Password</label>
+                        <input type="password" id="newPassword" class="input" data-i18n-placeholder="settings.newPassPlaceholder" placeholder="New password (min 4 chars)">
                     </div>
                     <div class="form-group" style="margin-bottom:16px;">
-                        <label>Confirm New Password</label>
-                        <input type="password" id="confirmPassword" class="input" placeholder="Confirm new password">
+                        <label data-i18n="settings.confirmPass">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" class="input" data-i18n-placeholder="settings.confirmPlaceholder" placeholder="Confirm new password">
                     </div>
-                    <button id="changePasswordBtn" class="btn btn-primary" style="width:auto;">Change Password</button>
+                    <button id="changePasswordBtn" class="btn btn-primary" style="width:auto;" data-i18n="settings.changePass">Change Password</button>
                 </div>
             </div>
 
             <div class="card settings-ai" style="width:50%;">
-                <h2>🧠 AI Analysis</h2>
-                <p style="color:var(--text-secondary);margin-bottom:16px;font-size:14px;">
+                <h2 data-i18n="settings.language">🌐 Language</h2>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <select id="langSelect" class="input" style="max-width:200px;">
+                        <option value="tr" data-i18n="settings.langTR">Türkçe</option>
+                        <option value="en" data-i18n="settings.langEN">English</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card settings-ai" style="width:50%;margin-top:16px;">
+                <h2 data-i18n="settings.ai">🧠 AI Analysis</h2>
+                <p style="color:var(--text-secondary);margin-bottom:16px;font-size:14px;" data-i18n="settings.aiDesc">
                     Rüyalarınız DeepSeek AI ile analiz edilir.
                 </p>
             </div>
 
             <div class="card" style="width:50%;margin-top:16px;">
-                <h2>🚫 Hidden Dreams</h2>
-                <p style="color:var(--text-secondary);margin-bottom:16px;font-size:14px;">
+                <h2 data-i18n="settings.hidden">🚫 Hidden Dreams</h2>
+                <p style="color:var(--text-secondary);margin-bottom:16px;font-size:14px;" data-i18n="settings.hiddenDesc">
                     Discover'da gizlediğiniz rüyalar.
                 </p>
                 <div id="hiddenDreamsList" style="max-height:300px;overflow-y:auto;"></div>
@@ -390,6 +400,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/i18n.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/utils.js"></script>

@@ -2,6 +2,7 @@ const App = {
     currentPage: "dashboard",
 
     async init() {
+        await LANG.init();
         Theme.init();
         Auth.init();
         this.registerServiceWorker();
@@ -30,6 +31,11 @@ const App = {
         }
 
         this.bindNavigation();
+        document.addEventListener("change", (e) => {
+            if (e.target.id === "langSelect") {
+                LANG.set(e.target.value);
+            }
+        });
     },
 
     registerServiceWorker() {

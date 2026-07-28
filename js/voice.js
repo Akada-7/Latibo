@@ -39,10 +39,7 @@ const Voice = {
 
         this.recognition.onerror = (event) => {
             if (event.error === "not-allowed") {
-                const msg = this.lang === "tr-TR"
-                    ? "Mikrofon erişimi reddedildi."
-                    : "Microphone access denied.";
-                Utils.showToast(msg, "error");
+                Utils.showToast(__("voice.denied"), "error");
                 this.stop();
             } else if (event.error === "no-speech") {
                 this.stop();
@@ -73,8 +70,8 @@ const Voice = {
         localStorage.setItem("dreamapp_voice_lang", lang);
         this.stop();
         this.updateLangButton();
-        const msg = lang === "tr-TR" ? "Türkçe ses tanıma aktif" : "English voice recognition active";
-        Utils.showToast(msg, "info");
+        const msgKey = lang === "tr-TR" ? "voice.switchTR" : "voice.switchEN";
+        Utils.showToast(__(msgKey), "info");
     },
 
     toggleLanguage() {
@@ -114,10 +111,7 @@ const Voice = {
             this.recognition.start();
             this.isListening = true;
             this.updateUI(true);
-            const msg = this.lang === "tr-TR"
-                ? "Ses kaydı başladı. Konuşun!"
-                : "Voice recording started. Speak now!";
-            Utils.showToast(msg, "info");
+            Utils.showToast(__("voice.start"), "info");
         } catch (e) {
             console.error("Voice start error:", e);
             this.isListening = false;
@@ -154,7 +148,7 @@ const Voice = {
         const btn = document.getElementById("voiceBtn");
         if (btn) {
             btn.disabled = true;
-            btn.title = "Voice input not supported in this browser";
+            btn.title = __("voice.notSupported");
             btn.style.opacity = "0.4";
         }
     }

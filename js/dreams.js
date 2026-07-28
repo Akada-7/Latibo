@@ -31,7 +31,7 @@ const Dreams = {
         document.addEventListener("click", (e) => {
             const btn = e.target.closest(".emotion-btn");
             if (btn) {
-                const feeling = btn.textContent.trim();
+                const feeling = btn.dataset.feeling || btn.textContent.trim();
                 if (this.selectedFeelings.includes(feeling)) {
                     this.selectedFeelings = this.selectedFeelings.filter(f => f !== feeling);
                     btn.classList.remove("selected");
@@ -125,7 +125,7 @@ const Dreams = {
     showTags() {
         const text = document.getElementById("ruya").value.trim();
         if (!text) {
-            Utils.showToast("Write a dream first.", "error");
+            Utils.showToast(__("toast.writeFirst"), "error");
             return;
         }
         App.navigateTo("tags");
@@ -140,7 +140,7 @@ const Dreams = {
         const text = textarea.value.trim();
 
         if (!text) {
-            Utils.showToast("Write a dream first.", "error");
+            Utils.showToast(__("toast.writeFirst"), "error");
             return;
         }
 
@@ -155,10 +155,10 @@ const Dreams = {
 
         if (this.selectedDreamId) {
             await Storage.updateDream(this.selectedDreamId, dreamData);
-            Utils.showToast("Dream updated!", "success");
+            Utils.showToast(__("toast.updateSuccess"), "success");
         } else {
             await Storage.addDream(dreamData);
-            Utils.showToast("Dream saved!", "success");
+            Utils.showToast(__("toast.saveSuccess"), "success");
         }
 
         this.selectedDreamId = null;
@@ -215,7 +215,7 @@ const Dreams = {
 
         const dreams = Storage.getDreams();
         if (dreams.length === 0) {
-            weeklyBox.innerHTML = "No dream yet";
+            weeklyBox.innerHTML = __("nav.noDream");
             return;
         }
 
@@ -246,7 +246,7 @@ const Dreams = {
             const cats = Array.isArray(dream.category) ? dream.category : (dream.category ? [dream.category] : []);
             let badges = cats.map(c => `<span class="badge">${Utils.escapeHtml(c)}</span>`).join(" ");
             if (dream.nsfw) badges += `<span class="badge" style="background:var(--danger);color:white;border-color:var(--danger);">NSFW</span>`;
-            categoryEl.innerHTML = badges.length > 0 ? badges : "Uncategorized";
+            categoryEl.innerHTML = badges.length > 0 ? badges : __("detail.uncategorized");
         }
 
         App.navigateTo("details");
@@ -278,7 +278,7 @@ const Dreams = {
         document.getElementById("editDetailText").style.display = "none";
         document.getElementById("detailSaveBtn").style.display = "none";
 
-        Utils.showToast("Dream updated!", "success");
+        Utils.showToast(__("toast.updateSuccess"), "success");
         this.render();
     },
 
@@ -288,9 +288,9 @@ const Dreams = {
     },
 
     async deleteDreamById(id) {
-        if (!confirm("Delete this dream?")) return;
+        if (!confirm(__("toast.confirmDelete"))) return;
         await Storage.deleteDream(id);
-        Utils.showToast("Dream deleted.", "info");
+        Utils.showToast(__("toast.deleteSuccess"), "info");
         this.render();
     },
 

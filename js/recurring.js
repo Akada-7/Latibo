@@ -14,7 +14,7 @@ const Recurring = {
     findRecurring() {
         const dreams = Storage.getDreams();
         if (dreams.length < 2) {
-            Utils.showToast("Need at least 2 dreams to find patterns.", "info");
+            Utils.showToast(__("toast.minDreams"), "info");
             return;
         }
 
