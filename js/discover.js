@@ -72,13 +72,13 @@ const Discover = {
         try {
             const q = document.getElementById("discoverSearch") ? document.getElementById("discoverSearch").value : "";
             const category = document.getElementById("discoverFilter") ? document.getElementById("discoverFilter").value : "";
-            let url = `${API_URL}/discover`;
+            let url = `/discover`;
             const params = [];
             if (q) params.push(`q=${encodeURIComponent(q)}`);
             if (category) params.push(`category=${encodeURIComponent(category)}`);
             if (params.length) url += "?" + params.join("&");
 
-            this.dreams = await fetch(url).then(r => r.json());
+            this.dreams = await Storage.apiCall(url, "GET");
         } catch (e) {
             this.dreams = [];
         }
