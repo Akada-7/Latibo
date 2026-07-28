@@ -242,6 +242,9 @@ const LANG = {
         "settings.exportPatterns": "Desenler: ",
         "settings.exportSuggestions": "Öneriler: ",
         "settings.exportDeepAnalysis": "Derin Analiz:",
+        "settings.logout": "🚪 Çıkış Yap",
+        "settings.logoutDesc": "Hesabından çıkış yap.",
+        "settings.logoutBtn": "Çıkış Yap",
         "settings.needLogin": "Giriş yapman gerekiyor.",
 
         // --- Voice ---
@@ -470,6 +473,9 @@ const LANG = {
         "settings.exportPatterns": "Patterns: ",
         "settings.exportSuggestions": "Suggestions: ",
         "settings.exportDeepAnalysis": "Deep Analysis:",
+        "settings.logout": "🚪 Logout",
+        "settings.logoutDesc": "Log out of your account.",
+        "settings.logoutBtn": "Logout",
         "settings.needLogin": "You need to log in.",
 
         "voice.start": "Voice recording started. Speak now!",
