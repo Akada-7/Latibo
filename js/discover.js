@@ -40,14 +40,6 @@ const Discover = {
                 const id = reportBtn.dataset.id;
                 this.showReportModal(id);
             }
-            const submitReportBtn = e.target.closest("#submitReportBtn");
-            if (submitReportBtn) {
-                this.submitReport();
-            }
-            const cancelReportBtn = e.target.closest("#cancelReportBtn");
-            if (cancelReportBtn) {
-                this.hideReportModal();
-            }
             const submitCommentBtn = e.target.closest(".comment-submit-btn");
             if (submitCommentBtn) {
                 const id = submitCommentBtn.dataset.id;
@@ -226,7 +218,7 @@ const Discover = {
         overlay.className = "modal-overlay active";
         overlay.id = "reportModal";
         overlay.innerHTML = `
-            <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal">
                 <h2>🚩 Report Dream</h2>
                 <div class="form-group" style="margin-bottom:16px;">
                     <label>Reason</label>
@@ -241,14 +233,21 @@ const Discover = {
                 </div>
                 <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Reporting will hide this dream from your feed.</p>
                 <div style="display:flex;gap:10px;justify-content:flex-end;">
-                    <button id="cancelReportBtn" class="btn" style="width:auto;">Cancel</button>
-                    <button id="submitReportBtn" class="btn btn-primary" style="width:auto;">Report & Hide</button>
+                    <button class="btn report-cancel-btn" style="width:auto;">Cancel</button>
+                    <button class="btn btn-primary report-submit-btn" style="width:auto;">Report & Hide</button>
                 </div>
-                <input type="hidden" id="reportDreamId" value="${id}">
+                <input type="hidden" class="report-dream-id" value="${id}">
             </div>
         `;
-        overlay.onclick = () => overlay.remove();
-        overlay.querySelector(".modal").onclick = (e) => e.stopPropagation();
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) overlay.remove();
+        });
+        overlay.querySelector(".report-submit-btn").addEventListener("click", () => {
+            this.submitReport(overlay);
+        });
+        overlay.querySelector(".report-cancel-btn").addEventListener("click", () => {
+            overlay.remove();
+        });
         document.body.appendChild(overlay);
     },
 
@@ -257,20 +256,25 @@ const Discover = {
         if (modal) modal.remove();
     },
 
-    async submitReport() {
-        const id = document.getElementById("reportDreamId").value;
-        const reason = document.getElementById("reportReason").value;
+    async submitReport(overlay) {
+        const id = overlay.querySelector(".report-dream-id").value;
+        const reason = overlay.querySelector("#reportReason").value;
         if (!reason) return;
 
         try {
-            const result = await Storage.apiCall(`/discover/${id}/report`, "POST", { reason });
+            await Storage.apiCall(`/discover/${id}/report`, "POST", { reason });
             this.dreams = this.dreams.filter(d => d._id !== id);
             this.render();
             Utils.showToast("Dream reported and hidden.", "success");
-            this.hideReportModal();
+            overlay.remove();
         } catch (e) {
             Utils.showToast("Failed: " + e.message, "error");
         }
+    },
+
+    hideReportModal() {
+        const modal = document.getElementById("reportModal");
+        if (modal) modal.remove();
     },
 
     async shareDream() {

@@ -352,6 +352,17 @@ app.post("/api/discover/:id/hide", authMiddleware, async (req, res) => {
     res.json({ success: true });
 });
 
+app.post("/api/discover/:id/unhide", authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    await sharedCol.updateOne({ _id: new ObjectId(id) }, { $pull: { hiddenBy: req.user.id } });
+    res.json({ success: true });
+});
+
+app.get("/api/discover/hidden", authMiddleware, async (req, res) => {
+    const dreams = await sharedCol.find({ hiddenBy: req.user.id }).sort({ createdAt: -1 }).limit(50).toArray();
+    res.json(dreams);
+});
+
 app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
 });

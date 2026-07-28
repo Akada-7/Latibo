@@ -8,6 +8,8 @@ const Settings = {
             if (e.target.id === "saveProfileBtn") this.saveProfile();
             if (e.target.id === "changePasswordBtn") this.changePassword();
             if (e.target.id === "exportDreamBtn") this.exportDream();
+            const unhideBtn = e.target.closest(".unhide-btn");
+            if (unhideBtn) this.unhideDream(unhideBtn.dataset.id);
         });
     },
 
@@ -18,6 +20,30 @@ const Settings = {
         const emailEl = document.getElementById("settingsEmail");
         if (nameEl) nameEl.value = user.name || "";
         if (emailEl) emailEl.value = user.email || "";
+        this.loadHiddenDreams();
+    },
+
+    async loadHiddenDreams() {
+        const container = document.getElementById("hiddenDreamsList");
+        if (!container) return;
+        try {
+            const dreams = await Storage.apiCall("/discover/hidden");
+            if (dreams.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No hidden dreams.</p>';
+                return;
+            }
+            container.innerHTML = dreams.map(d => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color);">
+                    <div style="flex:1;min-width:0;">
+                        <p style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${Utils.escapeHtml(d.title || "Untitled")}</p>
+                        <p style="font-size:11px;color:var(--text-muted);">by ${Utils.escapeHtml(d.authorName || "Anonymous")}</p>
+                    </div>
+                    <button class="btn btn-sm unhide-btn" data-id="${d._id}" style="width:auto;flex-shrink:0;">Unhide</button>
+                </div>
+            `).join("");
+        } catch (e) {
+            container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Failed to load.</p>';
+        }
     },
 
     async saveProfile() {
@@ -111,5 +137,15 @@ const Settings = {
         a.click();
         URL.revokeObjectURL(a.href);
         Utils.showToast("Dream exported!", "success");
+    },
+
+    async unhideDream(id) {
+        try {
+            await Storage.apiCall(`/discover/${id}/unhide`, "POST");
+            Utils.showToast("Dream unhidden.", "success");
+            this.loadHiddenDreams();
+        } catch (e) {
+            Utils.showToast("Failed: " + e.message, "error");
+        }
     }
 };
