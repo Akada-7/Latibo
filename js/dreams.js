@@ -2,6 +2,7 @@ const Dreams = {
     selectedDreamId: null,
     selectedFeelings: [],
     selectedCategories: [],
+    nsfw: false,
 
     init() {
         this.bindEvents();
@@ -91,6 +92,12 @@ const Dreams = {
             }
         });
 
+        document.addEventListener("change", (e) => {
+            if (e.target.id === "nsfwToggle") {
+                this.nsfw = e.target.checked;
+            }
+        });
+
         document.addEventListener("click", (e) => {
             if (e.target.id === "detailDreamText" || e.target.closest("#detailDreamText")) {
                 if (document.getElementById("editDetailText").style.display === "none") {
@@ -104,11 +111,14 @@ const Dreams = {
         this.selectedDreamId = null;
         this.selectedFeelings = [];
         this.selectedCategories = [];
+        this.nsfw = false;
         document.getElementById("ruya").value = "";
         document.querySelectorAll(".emotion-btn").forEach(b => b.classList.remove("selected"));
         document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("selected"));
         const otherInput = document.getElementById("otherCategoryInput");
         if (otherInput) { otherInput.style.display = "none"; otherInput.value = ""; otherInput._prevVal = ""; }
+        const nsfwToggle = document.getElementById("nsfwToggle");
+        if (nsfwToggle) nsfwToggle.checked = false;
         App.navigateTo("editor");
     },
 
@@ -139,7 +149,8 @@ const Dreams = {
             text: text,
             feelings: [...this.selectedFeelings],
             category: [...this.selectedCategories],
-            tags: [...this.selectedTags || []]
+            tags: [...this.selectedTags || []],
+            nsfw: this.nsfw
         };
 
         if (this.selectedDreamId) {
@@ -153,11 +164,14 @@ const Dreams = {
         this.selectedDreamId = null;
         this.selectedFeelings = [];
         this.selectedCategories = [];
+        this.nsfw = false;
         textarea.value = "";
         document.querySelectorAll(".emotion-btn").forEach(b => b.classList.remove("selected"));
         document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("selected"));
         const otherInput = document.getElementById("otherCategoryInput");
         if (otherInput) { otherInput.style.display = "none"; otherInput.value = ""; otherInput._prevVal = ""; }
+        const nsfwToggle = document.getElementById("nsfwToggle");
+        if (nsfwToggle) nsfwToggle.checked = false;
 
         this.render();
         App.navigateTo("dashboard");
@@ -230,9 +244,9 @@ const Dreams = {
         const categoryEl = document.getElementById("detailCategory");
         if (categoryEl) {
             const cats = Array.isArray(dream.category) ? dream.category : (dream.category ? [dream.category] : []);
-            categoryEl.innerHTML = cats.length > 0
-                ? cats.map(c => `<span class="badge">${Utils.escapeHtml(c)}</span>`).join(" ")
-                : "Uncategorized";
+            let badges = cats.map(c => `<span class="badge">${Utils.escapeHtml(c)}</span>`).join(" ");
+            if (dream.nsfw) badges += `<span class="badge" style="background:var(--danger);color:white;border-color:var(--danger);">NSFW</span>`;
+            categoryEl.innerHTML = badges.length > 0 ? badges : "Uncategorized";
         }
 
         App.navigateTo("details");

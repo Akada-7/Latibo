@@ -9,16 +9,6 @@ const Settings = {
             if (e.target.id === "changePasswordBtn") this.changePassword();
             if (e.target.id === "exportDreamBtn") this.exportDream();
         });
-
-        document.addEventListener("input", (e) => {
-            if (e.target.id === "discoverSearch") {
-                clearTimeout(this._searchTimer);
-                this._searchTimer = setTimeout(() => Discover.loadDiscover(), 300);
-            }
-            if (e.target.id === "discoverFilter") {
-                Discover.loadDiscover();
-            }
-        });
     },
 
     loadProfile() {

@@ -153,7 +153,7 @@ app.get("/api/dreams", authMiddleware, async (req, res) => {
 });
 
 app.post("/api/dreams", authMiddleware, async (req, res) => {
-    const dream = { ...req.body, userId: req.user.id, createdAt: new Date() };
+    const dream = { ...req.body, userId: req.user.id, nsfw: req.body.nsfw || false, createdAt: new Date() };
     const result = await dreamsCol.insertOne(dream);
     res.status(201).json({ ...dream, _id: result.insertedId });
 });
@@ -161,7 +161,7 @@ app.post("/api/dreams", authMiddleware, async (req, res) => {
 app.put("/api/dreams/:id", authMiddleware, async (req, res) => {
     const { id } = req.params;
     const allowed = {};
-    const fields = ["text", "title", "feelings", "category", "tags", "likes", "aiAnalysis"];
+    const fields = ["text", "title", "feelings", "category", "tags", "likes", "aiAnalysis", "nsfw"];
     fields.forEach(f => { if (req.body[f] !== undefined) allowed[f] = req.body[f]; });
     await dreamsCol.updateOne({ _id: new ObjectId(id), userId: req.user.id }, { $set: allowed });
     res.json({ success: true });
@@ -247,8 +247,11 @@ app.post("/api/dreams/share", authMiddleware, async (req, res) => {
         text,
         feelings: feelings || [],
         category: category || [],
+        nsfw: false,
         likes: 0,
         likedBy: [],
+        comments: [],
+        reports: [],
         createdAt: new Date()
     };
     const result = await sharedCol.insertOne(shared);
@@ -264,6 +267,15 @@ app.delete("/api/dreams/share/:id", authMiddleware, async (req, res) => {
 app.get("/api/discover", async (req, res) => {
     const { q, category } = req.query;
     const filter = {};
+
+    const token = req.headers.authorization;
+    if (token && token.startsWith("Bearer ")) {
+        try {
+            const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
+            filter.userId = { $ne: decoded.id };
+        } catch (e) {}
+    }
+
     if (q) filter.text = { $regex: q, $options: "i" };
     if (category) filter.category = { $in: Array.isArray(category) ? category : [category] };
     const dreams = await sharedCol.find(filter).sort({ createdAt: -1 }).limit(50).toArray();
@@ -294,6 +306,43 @@ app.get("/api/discover/:id/liked", authMiddleware, async (req, res) => {
     const shared = await sharedCol.findOne({ _id: new ObjectId(id) });
     const liked = shared && shared.likedBy && shared.likedBy.includes(req.user.id);
     res.json({ liked: !!liked });
+});
+
+app.post("/api/discover/:id/comment", authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const { text } = req.body;
+    if (!text || !text.trim()) {
+        return res.status(400).json({ error: "Yorum metni gerekli." });
+    }
+    const comment = {
+        userId: req.user.id,
+        authorName: req.user.name,
+        text: text.trim(),
+        createdAt: new Date()
+    };
+    await sharedCol.updateOne({ _id: new ObjectId(id) }, { $push: { comments: comment } });
+    res.status(201).json(comment);
+});
+
+app.get("/api/discover/:id/comments", async (req, res) => {
+    const { id } = req.params;
+    const shared = await sharedCol.findOne({ _id: new ObjectId(id) });
+    res.json(shared ? shared.comments || [] : []);
+});
+
+app.post("/api/discover/:id/report", authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const { reason } = req.body;
+    if (!reason || !reason.trim()) {
+        return res.status(400).json({ error: "Sebep gerekli." });
+    }
+    const report = {
+        userId: req.user.id,
+        reason: reason.trim(),
+        createdAt: new Date()
+    };
+    await sharedCol.updateOne({ _id: new ObjectId(id) }, { $push: { reports: report } });
+    res.json({ success: true });
 });
 
 app.get("/api/health", (req, res) => {

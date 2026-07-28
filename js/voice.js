@@ -3,6 +3,7 @@ const Voice = {
     isListening: false,
     textarea: null,
     lang: "tr-TR",
+    restartTimeout: null,
 
     init() {
         this.textarea = document.getElementById("ruya");
@@ -11,81 +12,73 @@ const Voice = {
             this.disableButton();
             return;
         }
-        this.setupRecognition();
         this.bindEvents();
     },
 
     setupRecognition() {
+        if (this.recognition) {
+            try { this.recognition.abort(); } catch (e) {}
+        }
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         this.recognition = new SpeechRecognition();
-        this.recognition.continuous = true;
+        this.recognition.continuous = false;
         this.recognition.interimResults = true;
         this.recognition.lang = this.lang;
+        this.recognition.maxAlternatives = 1;
 
         this.recognition.onresult = (event) => {
-            let finalTranscript = "";
-            let interimTranscript = "";
-
+            let transcript = "";
             for (let i = event.resultIndex; i < event.results.length; i++) {
-                const transcript = event.results[i][0].transcript;
-                if (event.results[i].isFinal) {
-                    finalTranscript += transcript + " ";
-                } else {
-                    interimTranscript = transcript;
-                }
+                transcript += event.results[i][0].transcript;
             }
-
-            if (finalTranscript) {
-                const current = this.textarea.value;
-                this.textarea.value = current + finalTranscript;
-            }
-
-            const preview = document.getElementById("voicePreview");
-            if (preview) {
-                const listeningText = this.lang === "tr-TR" ? "Dinleniyor..." : "Listening...";
-                preview.textContent = interimTranscript || (finalTranscript ? listeningText : "");
+            if (transcript) {
+                this.textarea.value += transcript + " ";
+                this.textarea.dispatchEvent(new Event("input"));
             }
         };
 
         this.recognition.onerror = (event) => {
-            console.error("Speech recognition error:", event.error);
             if (event.error === "not-allowed") {
                 const msg = this.lang === "tr-TR"
-                    ? "Mikrofon erişimi reddedildi. Lütfen mikrofona izin verin."
-                    : "Microphone access denied. Please allow microphone.";
+                    ? "Mikrofon erişimi reddedildi."
+                    : "Microphone access denied.";
                 Utils.showToast(msg, "error");
-            } else if (event.error === "language-not-supported") {
-                const msg = this.lang === "tr-TR"
-                    ? "Türkçe ses tanıma bu tarayıcıda desteklenmiyor. İngilizce'ye geçiliyor."
-                    : "This language is not supported. Switching to English.";
-                Utils.showToast(msg, "error");
-                this.setLanguage("en-US");
-                return;
+                this.stop();
+            } else if (event.error === "no-speech") {
+                this.stop();
+                this.restart();
+            } else {
+                this.stop();
             }
-            this.stop();
         };
 
         this.recognition.onend = () => {
             if (this.isListening) {
-                this.recognition.start();
+                this.restart();
             }
         };
+    },
+
+    restart() {
+        clearTimeout(this.restartTimeout);
+        this.restartTimeout = setTimeout(() => {
+            if (this.isListening) {
+                this.start();
+            }
+        }, 300);
     },
 
     setLanguage(lang) {
         this.lang = lang;
         localStorage.setItem("dreamapp_voice_lang", lang);
         this.stop();
-        this.setupRecognition();
-        this.start();
+        this.updateLangButton();
+        const msg = lang === "tr-TR" ? "Türkçe ses tanıma aktif" : "English voice recognition active";
+        Utils.showToast(msg, "info");
     },
 
     toggleLanguage() {
-        const newLang = this.lang === "tr-TR" ? "en-US" : "tr-TR";
-        this.setLanguage(newLang);
-        const msg = newLang === "tr-TR" ? "Türkçe ses tanıma aktif" : "English voice recognition active";
-        Utils.showToast(msg, "info");
-        this.updateLangButton();
+        this.setLanguage(this.lang === "tr-TR" ? "en-US" : "tr-TR");
     },
 
     updateLangButton() {
@@ -110,6 +103,7 @@ const Voice = {
         if (this.isListening) {
             this.stop();
         } else {
+            this.setupRecognition();
             this.start();
         }
     },
@@ -125,16 +119,19 @@ const Voice = {
                 : "Voice recording started. Speak now!";
             Utils.showToast(msg, "info");
         } catch (e) {
-            console.error("Failed to start recognition:", e);
+            console.error("Voice start error:", e);
+            this.isListening = false;
         }
     },
 
     stop() {
-        if (!this.recognition) return;
+        clearTimeout(this.restartTimeout);
         this.isListening = false;
-        this.recognition.stop();
+        if (this.recognition) {
+            try { this.recognition.stop(); } catch (e) {}
+            try { this.recognition.abort(); } catch (e) {}
+        }
         this.updateUI(false);
-
         const preview = document.getElementById("voicePreview");
         if (preview) preview.textContent = "";
     },
@@ -144,11 +141,9 @@ const Voice = {
         const indicator = document.getElementById("voiceIndicator");
         if (btn) {
             btn.classList.toggle("listening", listening);
-            if (this.lang === "tr-TR") {
-                btn.innerHTML = listening ? "⏹️ Kaydı Durdur" : "🎙️ Sesli Giriş";
-            } else {
-                btn.innerHTML = listening ? "⏹️ Stop Recording" : "🎙️ Start Voice";
-            }
+            btn.innerHTML = listening
+                ? "⏹️ " + (this.lang === "tr-TR" ? "Durdur" : "Stop")
+                : "🎙️ " + (this.lang === "tr-TR" ? "Sesli Giriş" : "Voice Input");
         }
         if (indicator) {
             indicator.style.display = listening ? "flex" : "none";
