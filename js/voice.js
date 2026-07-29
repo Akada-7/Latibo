@@ -4,6 +4,7 @@ const Voice = {
     textarea: null,
     lang: "tr-TR",
     restartTimeout: null,
+    finalTranscript: "",
 
     init() {
         this.textarea = document.getElementById("ruya");
@@ -27,14 +28,23 @@ const Voice = {
         this.recognition.maxAlternatives = 1;
 
         this.recognition.onresult = (event) => {
-            let transcript = "";
+            let interim = "";
+            let final = "";
             for (let i = event.resultIndex; i < event.results.length; i++) {
-                transcript += event.results[i][0].transcript;
+                const r = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    final += r;
+                } else {
+                    interim += r;
+                }
             }
-            if (transcript) {
-                this.textarea.value += transcript + " ";
-                this.textarea.dispatchEvent(new Event("input"));
+            if (final) {
+                this.finalTranscript += final + " ";
+                this.textarea.value = this.finalTranscript;
             }
+            const preview = document.getElementById("voicePreview");
+            if (preview) preview.textContent = interim || "";
+            this.textarea.dispatchEvent(new Event("input"));
         };
 
         this.recognition.onerror = (event) => {
@@ -100,6 +110,7 @@ const Voice = {
         if (this.isListening) {
             this.stop();
         } else {
+            this.finalTranscript = this.textarea ? this.textarea.value : "";
             this.setupRecognition();
             this.start();
         }
@@ -127,7 +138,14 @@ const Voice = {
         }
         this.updateUI(false);
         const preview = document.getElementById("voicePreview");
-        if (preview) preview.textContent = "";
+        if (preview) {
+            if (preview.textContent.trim()) {
+                this.textarea.value += preview.textContent.trim() + " ";
+                this.textarea.dispatchEvent(new Event("input"));
+            }
+            preview.textContent = "";
+        }
+        this.finalTranscript = this.textarea.value;
     },
 
     updateUI(listening) {
