@@ -225,6 +225,67 @@ Write each field in 5-7 detailed sentences. For symbols, write each symbol on a 
     }
 });
 
+app.post("/api/insights", authMiddleware, async (req, res) => {
+    if (!DEEPSEEK_KEY) {
+        return res.status(500).json({ error: "DeepSeek API key tanimli degil." });
+    }
+
+    try {
+        const dreams = await dreamsCol.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(50).toArray();
+        if (dreams.length === 0) {
+            return res.json({ insights: [] });
+        }
+
+        const dreamsText = dreams.map((d, i) =>
+            `Rüya ${i+1} (${d.date || d.createdAt?.toISOString().split("T")[0] || "bilinmeyen tarih"}, Kategori: ${d.category || "belirtilmemiş"}, Duygu: ${(d.feelings||[]).join(", ") || "belirtilmemiş"}): ${d.text || ""}`
+        ).join("\n\n");
+
+        const isTurkish = dreams.some(d => /[çğıöşüÇĞİÖŞÜ]/.test(d.text || ""));
+
+        const systemPrompt = isTurkish
+            ? `Rüya analisti olarak, kullanıcının son rüyalarını analiz et. 4-6 adet kısa, çarpıcı içgörü üret. Her içgörü, kullanıcının rüya desenleri, sık görülen temalar, son trendler, duygu durumu veya ilginç kalıplar hakkında olsun. Doğal, samimi ve akıcı Türkçe yaz. Her içgörü için uygun bir emoji seç.
+
+SADECE şu JSON formatında yanıt ver (başka hiçbir şey yazma):
+{"insights":[{"icon":"📊","text":"içgörü metni"},{"icon":"🌊","text":"içgörü metni"}]}
+
+Her içgörü metni 1 cümle, en fazla 80 karakter olsun. Çeşitli konulardan içgörü üret: kategori dağılımı, sık kelimeler, duygu durumu, son haftadaki değişimler, ilginç kalıplar gibi.`
+            : `As a dream analyst, analyze the user's recent dreams. Generate 4-6 short, striking insights about their dream patterns, common themes, recent trends, emotional state, or interesting patterns. Write in natural, warm English. Choose an appropriate emoji for each insight.
+
+Respond ONLY with this JSON format (no other text):
+{"insights":[{"icon":"📊","text":"insight text"},{"icon":"🌊","text":"insight text"}]}
+
+Each insight text should be 1 sentence, max 80 characters. Cover diverse topics: category distribution, frequent words, emotional state, recent week changes, interesting patterns.`;
+
+        const response = await fetch("https://api.deepseek.com/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${DEEPSEEK_KEY}`
+            },
+            body: JSON.stringify({
+                model: "deepseek-chat",
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: dreamsText }
+                ],
+                temperature: 0.7
+            })
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error?.message || "DeepSeek API hatasi");
+        }
+
+        const data = await response.json();
+        const content = data.choices[0].message.content;
+        const parsed = JSON.parse(content);
+        res.json(parsed);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.get("/api/dreams/:id/shared", authMiddleware, async (req, res) => {
     const { id } = req.params;
     const shared = await sharedCol.findOne({ dreamId: id, userId: req.user.id });

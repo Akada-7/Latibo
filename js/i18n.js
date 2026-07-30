@@ -103,6 +103,8 @@ const LANG = {
         "dash.positivity": "Pozitiflik",
 
         // --- Insights ---
+        "insight.loading": "🧠 AI içgörüler hazırlanıyor...",
+        "insight.error": "İçgörüler yüklenemedi.",
         "insight.category": "Rüyalarının %{pct}'i %{cat} kategorisinde",
         "insight.feeling": "En sık hissettiğin duygu: %{feeling} (rüyalarının %{pct}'i)",
         "insight.trendUp": "Son haftada %{cat} ile ilgili rüyaların arttı 📈",
@@ -367,6 +369,8 @@ const LANG = {
         "dash.positivity": "Positivity",
 
         // --- Insights ---
+        "insight.loading": "🧠 AI is preparing insights...",
+        "insight.error": "Could not load insights.",
         "insight.category": "%{pct}% of your dreams are about %{cat}",
         "insight.feeling": "Most common feeling: %{feeling} (%{pct}% of dreams)",
         "insight.trendUp": "Dreams about %{cat} have increased this week 📈",
