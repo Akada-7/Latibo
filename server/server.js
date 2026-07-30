@@ -80,10 +80,10 @@ app.post("/api/register", async (req, res) => {
         return res.status(409).json({ error: "Bu e-posta zaten kayitli." });
     }
     const hash = await bcrypt.hash(password, 10);
-    const result = await usersCol.insertOne({ name, email, password: hash, createdAt: new Date() });
+    const result = await usersCol.insertOne({ name, email, password: hash, createdAt: new Date(), role: "user" });
     const id = result.insertedId.toString();
-    const token = jwt.sign({ id, name, email }, process.env.JWT_SECRET, { expiresIn: "7d" });
-    res.status(201).json({ token, user: { id, name, email } });
+    const token = jwt.sign({ id, name, email, role: "user" }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    res.status(201).json({ token, user: { id, name, email, role: "user" } });
 });
 
 app.post("/api/login", async (req, res) => {
@@ -96,8 +96,9 @@ app.post("/api/login", async (req, res) => {
         return res.status(401).json({ error: "E-posta veya sifre hatali." });
     }
     const id = user._id.toString();
-    const token = jwt.sign({ id, name: user.name, email }, process.env.JWT_SECRET, { expiresIn: "7d" });
-    res.json({ token, user: { id, name: user.name, email } });
+    const role = user.role || "user";
+    const token = jwt.sign({ id, name: user.name, email, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    res.json({ token, user: { id, name: user.name, email, role } });
 });
 
 app.put("/api/profile", authMiddleware, async (req, res) => {
@@ -120,12 +121,12 @@ app.put("/api/profile", authMiddleware, async (req, res) => {
     await usersCol.updateOne({ _id: new ObjectId(userId) }, { $set: update });
 
     const newToken = jwt.sign(
-        { id: userId, name: name || req.user.name, email: email || req.user.email },
+        { id: userId, name: name || req.user.name, email: email || req.user.email, role: req.user.role || "user" },
         process.env.JWT_SECRET,
         { expiresIn: "7d" }
     );
 
-    res.json({ token: newToken, user: { id: userId, name: name || req.user.name, email: email || req.user.email } });
+    res.json({ token: newToken, user: { id: userId, name: name || req.user.name, email: email || req.user.email, role: req.user.role || "user" } });
 });
 
 app.put("/api/password", authMiddleware, async (req, res) => {
@@ -361,6 +362,32 @@ app.post("/api/discover/:id/unhide", authMiddleware, async (req, res) => {
 app.get("/api/discover/hidden", authMiddleware, async (req, res) => {
     const dreams = await sharedCol.find({ hiddenBy: req.user.id }).sort({ createdAt: -1 }).limit(50).toArray();
     res.json(dreams);
+});
+
+function adminMiddleware(req, res, next) {
+    authMiddleware(req, res, () => {
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ error: "Yetkisiz erisim." });
+        }
+        next();
+    });
+}
+
+app.get("/api/admin/discover", adminMiddleware, async (req, res) => {
+    const { q, category } = req.query;
+    const filter = {};
+    if (q) filter.text = { $regex: q, $options: "i" };
+    if (category) filter.category = { $in: Array.isArray(category) ? category : [category] };
+    const dreams = await sharedCol.find(filter).sort({ createdAt: -1 }).limit(100).toArray();
+    res.json(dreams);
+});
+
+app.delete("/api/admin/discover/:id", adminMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const dream = await sharedCol.findOne({ _id: new ObjectId(id) });
+    if (!dream) return res.status(404).json({ error: "Rüya bulunamadi." });
+    await sharedCol.deleteOne({ _id: new ObjectId(id) });
+    res.json({ success: true, deleted: dream.title || "Untitled" });
 });
 
 app.get("/api/health", (req, res) => {

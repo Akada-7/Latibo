@@ -72,6 +72,7 @@ const LANG = {
         "nav.discover": "🌍 Rüyaları Keşfet",
         "nav.recurring": "🔁 Tekrarlayan Rüyalar",
         "nav.settings": "⚙️ Ayarlar",
+        "nav.admin": "🛡️ Admin",
         "nav.dreamOfWeek": "⭐ Haftanın Rüyası",
         "nav.search": "Ara",
         "nav.searchPlaceholder": "Rüyalarda ara...",
@@ -246,6 +247,16 @@ const LANG = {
         "settings.logoutDesc": "Hesabından çıkış yap.",
         "settings.logoutBtn": "Çıkış Yap",
         "settings.needLogin": "Giriş yapman gerekiyor.",
+
+        // --- Admin ---
+        "admin.title": "🛡️ Admin Paneli",
+        "admin.subtitle": "Discover'daki tüm rüyaları yönet.",
+        "admin.searchPlaceholder": "Rüyalarda ara...",
+        "admin.refresh": "🔄 Yenile",
+        "admin.empty": "Henüz rüya yok.",
+        "admin.delete": "🗑️ Sil",
+        "admin.confirmDelete": "Bu rüyayı silmek istediğine emin misin?",
+        "admin.deleted": "Rüya silindi.",
 
         // --- Voice ---
         "voice.start": "Ses kaydı başladı. Konuşun!",
@@ -477,6 +488,17 @@ const LANG = {
         "settings.logoutDesc": "Log out of your account.",
         "settings.logoutBtn": "Logout",
         "settings.needLogin": "You need to log in.",
+
+        // --- Admin ---
+        "nav.admin": "🛡️ Admin",
+        "admin.title": "🛡️ Admin Panel",
+        "admin.subtitle": "Manage all dreams on Discover.",
+        "admin.searchPlaceholder": "Search dreams...",
+        "admin.refresh": "🔄 Refresh",
+        "admin.empty": "No dreams yet.",
+        "admin.delete": "🗑️ Delete",
+        "admin.confirmDelete": "Are you sure you want to delete this dream?",
+        "admin.deleted": "Dream deleted.",
 
         "voice.start": "Voice recording started. Speak now!",
         "voice.stop": "Voice recording stopped.",

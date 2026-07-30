@@ -22,6 +22,7 @@ const App = {
         Recurring.init();
         Discover.init();
         Settings.init();
+        Admin.init();
 
         if (Auth.isLoggedIn()) {
             await Storage.syncDreamsFromServer();
@@ -75,6 +76,9 @@ const App = {
             if (nameEl) nameEl.textContent = user.name;
             if (emailEl) emailEl.textContent = user.email;
             if (avatarEl) avatarEl.textContent = user.name.charAt(0).toUpperCase();
+
+            const adminNav = document.getElementById("adminNavItem");
+            if (adminNav) adminNav.style.display = user.role === "admin" ? "" : "none";
         }
 
         Dreams.render();
@@ -120,6 +124,10 @@ const App = {
 
         if (page === "stats") {
             setTimeout(() => Stats.renderCharts(Storage.getDreams()), 100);
+        }
+
+        if (page === "admin") {
+            Admin.loadAll();
         }
     }
 };
