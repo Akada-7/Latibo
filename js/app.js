@@ -70,13 +70,6 @@ const App = {
 
         const user = Auth.getCurrentUser();
         if (user) {
-            const nameEl = document.getElementById("userName");
-            const emailEl = document.getElementById("userEmail");
-            const avatarEl = document.getElementById("userAvatar");
-            if (nameEl) nameEl.textContent = user.name;
-            if (emailEl) emailEl.textContent = user.email;
-            if (avatarEl) avatarEl.textContent = user.name.charAt(0).toUpperCase();
-
             const adminNav = document.getElementById("adminNavItem");
             if (adminNav) adminNav.style.display = user.role === "admin" ? "" : "none";
         }

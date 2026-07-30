@@ -20,6 +20,12 @@ const Settings = {
         const emailEl = document.getElementById("settingsEmail");
         if (nameEl) nameEl.value = user.name || "";
         if (emailEl) emailEl.value = user.email || "";
+        const avatarEl = document.getElementById("settingsAvatar");
+        const userNameEl = document.getElementById("settingsUserName");
+        const userEmailEl = document.getElementById("settingsUserEmail");
+        if (avatarEl) avatarEl.textContent = (user.name || "U").charAt(0).toUpperCase();
+        if (userNameEl) userNameEl.textContent = user.name || "";
+        if (userEmailEl) userEmailEl.textContent = user.email || "";
         this.loadHiddenDreams();
         const langSel = document.getElementById("langSelect");
         if (langSel) langSel.value = LANG.current;
@@ -61,12 +67,12 @@ const Settings = {
             Storage.setToken(result.token);
             Storage.setUser(result.user);
 
-            const nameEl = document.getElementById("userName");
-            const emailEl = document.getElementById("userEmail");
-            const avatarEl = document.getElementById("userAvatar");
-            if (nameEl) nameEl.textContent = result.user.name;
-            if (emailEl) emailEl.textContent = result.user.email;
+            const avatarEl = document.getElementById("settingsAvatar");
+            const userNameEl = document.getElementById("settingsUserName");
+            const userEmailEl = document.getElementById("settingsUserEmail");
             if (avatarEl) avatarEl.textContent = result.user.name.charAt(0).toUpperCase();
+            if (userNameEl) userNameEl.textContent = result.user.name;
+            if (userEmailEl) userEmailEl.textContent = result.user.email;
 
             Utils.showToast(__("settings.profileUpdated"), "success");
         } catch (e) {

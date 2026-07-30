@@ -203,6 +203,7 @@ const LANG = {
         // --- Settings ---
         "settings.title": "⚙️ Ayarlar",
         "settings.subtitle": "Hesabını ve tercihlerini yönet.",
+        "settings.account": "👤 Hesabım",
         "settings.profile": "👤 Profil",
         "settings.name": "İsim",
         "settings.namePlaceholder": "Adın",
@@ -444,6 +445,7 @@ const LANG = {
 
         "settings.title": "⚙️ Settings",
         "settings.subtitle": "Manage your account and preferences.",
+        "settings.account": "👤 My Account",
         "settings.profile": "👤 Profile",
         "settings.name": "Name",
         "settings.namePlaceholder": "Your name",

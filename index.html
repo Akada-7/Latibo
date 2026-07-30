@@ -119,13 +119,8 @@
             <div id="dreamList" class="dream-list"></div>
         </div>
 
-        <div class="user-area">
-            <div class="user-avatar" id="userAvatar">U</div>
-            <div class="user-info">
-                <div class="user-name" id="userName">User</div>
-                <div class="user-email" id="userEmail">user@email.com</div>
-            </div>
         </div>
+
     </div>
 
     <!-- MAIN CONTENT -->
@@ -338,39 +333,45 @@
             <h1 data-i18n="settings.title">⚙️ Settings</h1>
             <p style="color:var(--text-muted);margin-bottom:24px;" data-i18n="settings.subtitle">Manage your account and preferences</p>
 
-            <div class="settings-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
-                <div class="card" style="margin-bottom:0;">
-                    <h2 data-i18n="settings.profile">👤 Profile</h2>
-                    <div class="form-group" style="margin-bottom:12px;">
-                        <label data-i18n="settings.name">Name</label>
-                        <input type="text" id="settingsName" class="input" data-i18n-placeholder="settings.namePlaceholder" placeholder="Your name">
+            <div class="card" style="margin-bottom:16px;">
+                <h2 data-i18n="settings.account">👤 Hesabım</h2>
+                <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+                    <div class="user-avatar" id="settingsAvatar" style="width:48px;height:48px;font-size:20px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:600;">U</div>
+                    <div>
+                        <div class="user-name" id="settingsUserName" style="font-weight:600;font-size:16px;">User</div>
+                        <div class="user-email" id="settingsUserEmail" style="color:var(--text-muted);font-size:13px;">user@email.com</div>
                     </div>
-                    <div class="form-group" style="margin-bottom:16px;">
-                        <label data-i18n="settings.email">Email</label>
-                        <input type="email" id="settingsEmail" class="input" data-i18n-placeholder="settings.emailPlaceholder" placeholder="Your email">
-                    </div>
-                    <button id="saveProfileBtn" class="btn btn-primary" style="width:auto;" data-i18n="settings.saveProfile">Save Profile</button>
                 </div>
-
-                <div class="card" style="margin-bottom:0;">
-                    <h2 data-i18n="settings.password">🔒 Change Password</h2>
-                    <div class="form-group" style="margin-bottom:12px;">
-                        <label data-i18n="settings.currentPass">Current Password</label>
-                        <input type="password" id="currentPassword" class="input" data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Current password">
-                    </div>
-                    <div class="form-group" style="margin-bottom:12px;">
-                        <label data-i18n="settings.newPass">New Password</label>
-                        <input type="password" id="newPassword" class="input" data-i18n-placeholder="settings.newPassPlaceholder" placeholder="New password (min 4 chars)">
-                    </div>
-                    <div class="form-group" style="margin-bottom:16px;">
-                        <label data-i18n="settings.confirmPass">Confirm New Password</label>
-                        <input type="password" id="confirmPassword" class="input" data-i18n-placeholder="settings.confirmPlaceholder" placeholder="Confirm new password">
-                    </div>
-                    <button id="changePasswordBtn" class="btn btn-primary" style="width:auto;" data-i18n="settings.changePass">Change Password</button>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label data-i18n="settings.name">Name</label>
+                    <input type="text" id="settingsName" class="input" data-i18n-placeholder="settings.namePlaceholder" placeholder="Your name">
                 </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label data-i18n="settings.email">Email</label>
+                    <input type="email" id="settingsEmail" class="input" data-i18n-placeholder="settings.emailPlaceholder" placeholder="Your email">
+                </div>
+                <button id="saveProfileBtn" class="btn btn-primary" style="width:auto;" data-i18n="settings.saveProfile">Save Profile</button>
+                <button id="logoutBtn" class="btn" style="width:auto;margin-left:10px;border-color:var(--danger);color:var(--danger);" data-i18n="settings.logoutBtn">Çıkış Yap</button>
             </div>
 
-            <div class="card settings-ai" style="width:50%;">
+            <div class="card" style="margin-bottom:16px;">
+                <h2 data-i18n="settings.password">🔒 Change Password</h2>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label data-i18n="settings.currentPass">Current Password</label>
+                    <input type="password" id="currentPassword" class="input" data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Current password">
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label data-i18n="settings.newPass">New Password</label>
+                    <input type="password" id="newPassword" class="input" data-i18n-placeholder="settings.newPassPlaceholder" placeholder="New password (min 4 chars)">
+                </div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label data-i18n="settings.confirmPass">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="input" data-i18n-placeholder="settings.confirmPlaceholder" placeholder="Confirm new password">
+                </div>
+                <button id="changePasswordBtn" class="btn btn-primary" style="width:auto;" data-i18n="settings.changePass">Change Password</button>
+            </div>
+
+            <div class="card settings-ai" style="margin-bottom:16px;">
                 <h2 data-i18n="settings.language">🌐 Language</h2>
                 <div class="form-group" style="margin-bottom:16px;">
                     <select id="langSelect" class="input" style="max-width:200px;">
@@ -380,27 +381,19 @@
                 </div>
             </div>
 
-            <div class="card settings-ai" style="width:50%;margin-top:16px;">
+            <div class="card settings-ai" style="margin-bottom:16px;">
                 <h2 data-i18n="settings.ai">🧠 AI Analysis</h2>
                 <p style="color:var(--text-secondary);margin-bottom:16px;font-size:14px;" data-i18n="settings.aiDesc">
                     Rüyalarınız DeepSeek AI ile analiz edilir.
                 </p>
             </div>
 
-            <div class="card" style="width:50%;margin-top:16px;">
+            <div class="card" style="margin-bottom:16px;">
                 <h2 data-i18n="settings.hidden">🚫 Hidden Dreams</h2>
                 <p style="color:var(--text-secondary);margin-bottom:16px;font-size:14px;" data-i18n="settings.hiddenDesc">
                     Discover'da gizlediğiniz rüyalar.
                 </p>
                 <div id="hiddenDreamsList" style="max-height:300px;overflow-y:auto;"></div>
-            </div>
-
-            <div class="card" style="width:50%;margin-top:16px;border-color:var(--danger);">
-                <h2 data-i18n="settings.logout">🚪 Çıkış Yap</h2>
-                <p style="color:var(--text-secondary);margin-bottom:16px;font-size:14px;" data-i18n="settings.logoutDesc">
-                    Hesabından çıkış yap.
-                </p>
-                <button id="logoutBtn" class="btn" style="width:auto;border-color:var(--danger);color:var(--danger);" data-i18n="settings.logoutBtn">Çıkış Yap</button>
             </div>
         </div>
 
