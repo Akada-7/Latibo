@@ -243,18 +243,28 @@ app.post("/api/insights", authMiddleware, async (req, res) => {
         const isTurkish = dreams.some(d => /[çğıöşüÇĞİÖŞÜ]/.test(d.text || ""));
 
         const systemPrompt = isTurkish
-            ? `Rüya analisti olarak, kullanıcının son rüyalarını analiz et. 4-6 adet kısa, çarpıcı içgörü üret. Her içgörü, kullanıcının rüya desenleri, sık görülen temalar, son trendler, duygu durumu veya ilginç kalıplar hakkında olsun. Doğal, samimi ve akıcı Türkçe yaz. Her içgörü için uygun bir emoji seç.
+            ? `Rüya analisti olarak, kullanıcının son rüyalarını analiz et. Tam olarak 3 adet içgörü üret:
+
+1. İlki son 3 gündeki rüya trendleri hakkında olsun (neler arttı, hangi temalar çıktı)
+2. İkincisi son 1 haftada hangi temaların baskın olduğu hakkında olsun
+3. Üçüncüsü rüyalarda arkadaşlar, tanıdıklar veya sosyal temalar hakkında olsun
+
+Doğal, samimi ve akıcı Türkçe yaz. Her içgörü için uygun bir emoji seç.
+Her içgörü metni 1 cümle, en fazla 80 karakter olsun.
 
 SADECE şu JSON formatında yanıt ver (başka hiçbir şey yazma):
-{"insights":[{"icon":"📊","text":"içgörü metni"},{"icon":"🌊","text":"içgörü metni"}]}
+{"insights":[{"icon":"📊","text":"içgörü metni"},{"icon":"🌊","text":"içgörü metni"},{"icon":"👥","text":"içgörü metni"}]}`
+            : `As a dream analyst, analyze the user's recent dreams. Generate exactly 3 insights:
 
-Her içgörü metni 1 cümle, en fazla 80 karakter olsun. Çeşitli konulardan içgörü üret: kategori dağılımı, sık kelimeler, duygu durumu, son haftadaki değişimler, ilginç kalıplar gibi.`
-            : `As a dream analyst, analyze the user's recent dreams. Generate 4-6 short, striking insights about their dream patterns, common themes, recent trends, emotional state, or interesting patterns. Write in natural, warm English. Choose an appropriate emoji for each insight.
+1. First about trends in the last 3 days (what increased, new themes)
+2. Second about dominant themes in the last week
+3. Third about friends, acquaintances or social themes in dreams
+
+Write in natural, warm English. Choose an appropriate emoji for each insight.
+Each insight text should be 1 sentence, max 80 characters.
 
 Respond ONLY with this JSON format (no other text):
-{"insights":[{"icon":"📊","text":"insight text"},{"icon":"🌊","text":"insight text"}]}
-
-Each insight text should be 1 sentence, max 80 characters. Cover diverse topics: category distribution, frequent words, emotional state, recent week changes, interesting patterns.`;
+{"insights":[{"icon":"📊","text":"insight text"},{"icon":"🌊","text":"insight text"},{"icon":"👥","text":"insight text"}]}`;
 
         const response = await fetch("https://api.deepseek.com/chat/completions", {
             method: "POST",
