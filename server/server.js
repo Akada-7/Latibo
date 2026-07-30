@@ -317,6 +317,7 @@ app.post("/api/discover/:id/comment", authMiddleware, async (req, res) => {
         return res.status(400).json({ error: "Yorum metni gerekli." });
     }
     const comment = {
+        _id: new ObjectId(),
         userId: req.user.id,
         authorName: req.user.name,
         text: text.trim(),
@@ -388,6 +389,38 @@ app.delete("/api/admin/discover/:id", adminMiddleware, async (req, res) => {
     if (!dream) return res.status(404).json({ error: "Rüya bulunamadi." });
     await sharedCol.deleteOne({ _id: new ObjectId(id) });
     res.json({ success: true, deleted: dream.title || "Untitled" });
+});
+
+app.get("/api/admin/comments", adminMiddleware, async (req, res) => {
+    const { q } = req.query;
+    const match = { "comments.0": { $exists: true } };
+    const dreams = await sharedCol.find(match, { projection: { _id: 1, title: 1, comments: 1 } }).sort({ createdAt: -1 }).toArray();
+    const all = [];
+    for (const d of dreams) {
+        for (const c of (d.comments || [])) {
+            if (q && !c.text.toLowerCase().includes(q.toLowerCase()) && !c.authorName.toLowerCase().includes(q.toLowerCase())) continue;
+            all.push({
+                dreamId: d._id,
+                dreamTitle: d.title || "Untitled",
+                commentId: c._id || c.createdAt?.getTime?.()?.toString(),
+                authorName: c.authorName || "Anonymous",
+                text: c.text,
+                createdAt: c.createdAt
+            });
+        }
+    }
+    all.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.json(all);
+});
+
+app.delete("/api/admin/comments/:dreamId/:commentId", adminMiddleware, async (req, res) => {
+    const { dreamId, commentId } = req.params;
+    const dream = await sharedCol.findOne({ _id: new ObjectId(dreamId) });
+    if (!dream) return res.status(404).json({ error: "Rüya bulunamadi." });
+    const comment = (dream.comments || []).find(c => (c._id && c._id.toString() === commentId) || (c.createdAt?.getTime?.()?.toString() === commentId));
+    if (!comment) return res.status(404).json({ error: "Yorum bulunamadi." });
+    await sharedCol.updateOne({ _id: new ObjectId(dreamId) }, { $pull: { comments: { _id: comment._id } } });
+    res.json({ success: true });
 });
 
 app.get("/api/health", (req, res) => {

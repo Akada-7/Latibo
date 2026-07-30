@@ -400,12 +400,19 @@
             <h1 data-i18n="admin.title">🛡️ Admin Panel</h1>
             <p style="color:var(--text-muted);margin-bottom:16px;" data-i18n="admin.subtitle">Discover'daki tüm rüyaları yönet.</p>
 
-            <div style="display:flex;gap:10px;margin-bottom:20px;">
+            <div style="display:flex;gap:6px;margin-bottom:16px;">
+                <button class="btn btn-primary" data-admin-tab="dreams" style="width:auto;font-size:13px;" data-i18n="admin.tabDreams">🌙 Rüyalar</button>
+                <button class="btn" data-admin-tab="comments" style="width:auto;font-size:13px;" data-i18n="admin.tabComments">💬 Yorumlar</button>
+                <button id="adminRefreshBtn" class="btn" style="width:auto;font-size:13px;margin-left:auto;" data-i18n="admin.refresh">🔄 Yenile</button>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-bottom:16px;">
                 <input type="text" id="adminSearch" class="input" data-i18n-placeholder="admin.searchPlaceholder" placeholder="Rüyalarda ara..." style="max-width:300px;">
-                <button id="adminRefreshBtn" class="btn btn-primary" style="width:auto;" data-i18n="admin.refresh">🔄 Yenile</button>
+                <input type="text" id="adminCommentSearch" class="input" data-i18n-placeholder="admin.commentSearchPlaceholder" placeholder="Yorumlarda ara..." style="max-width:300px;display:none;">
             </div>
 
             <div id="adminDreamList"></div>
+            <div id="adminCommentList" style="display:none;"></div>
         </div>
 
     </div>

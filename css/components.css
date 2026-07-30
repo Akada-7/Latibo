@@ -26,6 +26,7 @@
     font-weight: 600;
 }
 .btn-primary:hover { opacity: 0.9; background: var(--accent-gradient); }
+.btn[data-admin-tab].active { background: var(--accent-gradient); color: white; font-weight: 600; }
 
 .btn-danger {
     background: var(--danger);

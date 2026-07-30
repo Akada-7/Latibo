@@ -251,13 +251,20 @@ const LANG = {
 
         // --- Admin ---
         "admin.title": "🛡️ Admin Paneli",
-        "admin.subtitle": "Discover'daki tüm rüyaları yönet.",
+        "admin.subtitle": "Discover'daki tüm rüyaları ve yorumları yönet.",
         "admin.searchPlaceholder": "Rüyalarda ara...",
+        "admin.tabDreams": "🌙 Rüyalar",
+        "admin.tabComments": "💬 Yorumlar",
+        "admin.commentSearchPlaceholder": "Yorumlarda ara...",
         "admin.refresh": "🔄 Yenile",
         "admin.empty": "Henüz rüya yok.",
         "admin.delete": "🗑️ Sil",
         "admin.confirmDelete": "Bu rüyayı silmek istediğine emin misin?",
         "admin.deleted": "Rüya silindi.",
+        "admin.commentsEmpty": "Henüz yorum yok.",
+        "admin.commentOnDream": "Rüyada:",
+        "admin.confirmCommentDelete": "Bu yorumu silmek istediğine emin misin?",
+        "admin.commentDeleted": "Yorum silindi.",
 
         // --- Voice ---
         "voice.start": "Ses kaydı başladı. Konuşun!",
@@ -494,13 +501,20 @@ const LANG = {
         // --- Admin ---
         "nav.admin": "🛡️ Admin",
         "admin.title": "🛡️ Admin Panel",
-        "admin.subtitle": "Manage all dreams on Discover.",
+        "admin.subtitle": "Manage all dreams and comments on Discover.",
         "admin.searchPlaceholder": "Search dreams...",
+        "admin.tabDreams": "🌙 Dreams",
+        "admin.tabComments": "💬 Comments",
+        "admin.commentSearchPlaceholder": "Search comments...",
         "admin.refresh": "🔄 Refresh",
         "admin.empty": "No dreams yet.",
         "admin.delete": "🗑️ Delete",
         "admin.confirmDelete": "Are you sure you want to delete this dream?",
         "admin.deleted": "Dream deleted.",
+        "admin.commentsEmpty": "No comments yet.",
+        "admin.commentOnDream": "On dream:",
+        "admin.confirmCommentDelete": "Are you sure you want to delete this comment?",
+        "admin.commentDeleted": "Comment deleted.",
 
         "voice.start": "Voice recording started. Speak now!",
         "voice.stop": "Voice recording stopped.",
