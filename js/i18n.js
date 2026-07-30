@@ -102,6 +102,15 @@ const LANG = {
         "dash.lucidity": "Berraklık",
         "dash.positivity": "Pozitiflik",
 
+        // --- Insights ---
+        "insight.category": "Rüyalarının %{pct}'i %{cat} kategorisinde",
+        "insight.feeling": "En sık hissettiğin duygu: %{feeling} (rüyalarının %{pct}'i)",
+        "insight.trendUp": "Son haftada %{cat} ile ilgili rüyaların arttı 📈",
+        "insight.trendDown": "Son haftada %{cat} ile ilgili rüyaların azaldı 📉",
+        "insight.recentWords": "Son rüyalarında sık geçen: %{words}",
+        "insight.topWords": "En sık geçen kelimeler: %{words}",
+        "insight.frequency": "Haftada ortalama %{avg} rüya görüyorsun",
+
         // --- Editor ---
         "editor.title": "Bugünün Rüyası",
         "editor.subtitle": "Rüyanı hafızan tazeyken yaz.",
@@ -356,6 +365,15 @@ const LANG = {
         "dash.symbols": "Symbols",
         "dash.lucidity": "Lucidity",
         "dash.positivity": "Positivity",
+
+        // --- Insights ---
+        "insight.category": "%{pct}% of your dreams are about %{cat}",
+        "insight.feeling": "Most common feeling: %{feeling} (%{pct}% of dreams)",
+        "insight.trendUp": "Dreams about %{cat} have increased this week 📈",
+        "insight.trendDown": "Dreams about %{cat} have decreased this week 📉",
+        "insight.recentWords": "Recent dreams often include: %{words}",
+        "insight.topWords": "Top words: %{words}",
+        "insight.frequency": "Average %{avg} dreams per week",
 
         "editor.title": "Today's Dream",
         "editor.subtitle": "Write down your dream while the memory is fresh.",

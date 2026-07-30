@@ -284,3 +284,38 @@ textarea.input {
     color: white;
     border-color: #a78bfa;
 }
+
+.insight-bubbles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+.insight-bubble {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    color: var(--text-primary);
+    transition: all var(--transition);
+    cursor: default;
+    flex: 1 1 auto;
+    min-width: 200px;
+    max-width: 100%;
+}
+.insight-bubble:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(124,92,255,0.1);
+}
+.insight-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.insight-text {
+    line-height: 1.4;
+}

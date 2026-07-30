@@ -96,6 +96,7 @@ const App = {
 
         if (page === "dashboard") {
             Stats.update();
+            Insights.update();
         }
 
         if (page === "details" && Dreams.selectedDreamId) {
