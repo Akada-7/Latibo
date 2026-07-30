@@ -344,7 +344,6 @@ app.get("/api/discover", async (req, res) => {
     if (token && token.startsWith("Bearer ")) {
         try {
             const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
-            filter.userId = { $ne: decoded.id };
             filter.hiddenBy = { $nin: [decoded.id] };
         } catch (e) {}
     }
