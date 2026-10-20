@@ -51,6 +51,12 @@ const Storage = {
             throw new Error("Sunucu yaniti gecersiz. Yanit: " + text.substring(0, 100));
         }
 
+        if (res.status === 401 && this.getToken() && endpoint !== "/login" && endpoint !== "/register") {
+            this.clearUser();
+            if (typeof App !== "undefined" && App.showAuth) App.showAuth();
+            throw new Error("Oturum sureniz doldu. Lutfen tekrar giris yapin.");
+        }
+
         if (!res.ok) {
             throw new Error(data.error || "API request failed.");
         }
