@@ -11,55 +11,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY;
 const MONGO_URI = process.env.MONGO_URI;
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || "ardadgl07@gmail.com";
-const MAIL_FROM = process.env.MAIL_FROM || "Latibo Destek <onboarding@resend.dev>";
-
-async function sendSupportMail(doc) {
-    if (!RESEND_API_KEY) {
-        console.log("RESEND_API_KEY tanimli degil, mail gonderilmedi.");
-        return;
-    }
-    const who = doc.userName || doc.userEmail || doc.contact || "Anonim";
-    const html = `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f5f5f7;padding:24px;border-radius:12px;">
-            <h2 style="color:#7c5cff;margin:0 0 16px;">💬 Yeni Destek Mesajı</h2>
-            <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;">
-                <tr><td style="padding:10px 14px;color:#888;width:110px;">Tür</td><td style="padding:10px 14px;font-weight:600;">${doc.type}</td></tr>
-                <tr style="background:#fafafa;"><td style="padding:10px 14px;color:#888;">Gönderen</td><td style="padding:10px 14px;">${who}</td></tr>
-                <tr><td style="padding:10px 14px;color:#888;">İletişim</td><td style="padding:10px 14px;">${doc.contact || "-"}</td></tr>
-                <tr style="background:#fafafa;"><td style="padding:10px 14px;color:#888;">Sayfa</td><td style="padding:10px 14px;">${doc.page || "-"}</td></tr>
-                <tr><td style="padding:10px 14px;color:#888;">Tarih</td><td style="padding:10px 14px;">${new Date(doc.createdAt).toLocaleString("tr-TR")}</td></tr>
-            </table>
-            <div style="background:#fff;margin-top:14px;padding:16px;border-radius:8px;">
-                <p style="color:#888;margin:0 0 8px;font-size:13px;">Mesaj:</p>
-                <p style="margin:0;white-space:pre-wrap;line-height:1.6;">${doc.message}</p>
-            </div>
-            <p style="color:#aaa;font-size:12px;margin-top:16px;text-align:center;">Latibo · Admin Paneli → Destek sekmesinden yönetebilirsin.</p>
-        </div>
-    `;
-    try {
-        const resp = await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${RESEND_API_KEY}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                from: MAIL_FROM,
-                to: [SUPPORT_EMAIL],
-                subject: `💬 Yeni destek mesajı (${doc.type}) - ${who}`,
-                html
-            })
-        });
-        if (!resp.ok) {
-            const err = await resp.json().catch(() => ({}));
-            console.error("Resend mail hatasi:", err.message || resp.status);
-        }
-    } catch (e) {
-        console.error("Mail gonderim hatasi:", e.message);
-    }
-}
 
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
@@ -576,7 +527,6 @@ app.post("/api/support", async (req, res) => {
         createdAt: new Date()
     };
     const result = await supportCol.insertOne(doc);
-    sendSupportMail(doc);
     res.status(201).json({ success: true, _id: result.insertedId });
 });
 
