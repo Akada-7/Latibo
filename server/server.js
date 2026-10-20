@@ -283,8 +283,12 @@ Respond ONLY with this JSON format (no other text):
         });
 
         if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.error?.message || "DeepSeek API hatasi");
+            const err = await response.json().catch(() => ({}));
+            const msg = err.error?.message || "";
+            if (response.status === 401 || /auth|api key|invalid/i.test(msg)) {
+                throw new Error("DeepSeek API anahtari gecersiz veya yetkisiz. Render'daki DEEPSEEK_API_KEY ayarini kontrol edin. (" + (msg || response.status) + ")");
+            }
+            throw new Error(msg || "DeepSeek API hatasi");
         }
 
         const data = await response.json();
