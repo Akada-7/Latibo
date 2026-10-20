@@ -319,3 +319,39 @@ textarea.input {
 .insight-text {
     line-height: 1.4;
 }
+
+.support-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent-gradient);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(124, 92, 255, 0.4);
+    z-index: 900;
+    transition: transform var(--transition), box-shadow var(--transition);
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.support-fab:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(124, 92, 255, 0.55);
+}
+.support-fab:active {
+    transform: translateY(0) scale(0.98);
+}
+@media (max-width: 600px) {
+    .support-fab {
+        bottom: 18px;
+        right: 18px;
+        width: 50px;
+        height: 50px;
+    }
+}

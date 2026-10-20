@@ -1,6 +1,7 @@
 const Admin = {
     dreams: [],
     comments: [],
+    support: [],
     tab: "dreams",
 
     init() {
@@ -25,6 +26,10 @@ const Admin = {
             if (delCommentBtn) {
                 this.deleteComment(delCommentBtn.dataset.dreamId, delCommentBtn.dataset.commentId, delCommentBtn.dataset.author);
             }
+            const delSupportBtn = e.target.closest(".admin-support-delete-btn");
+            if (delSupportBtn) {
+                this.deleteSupport(delSupportBtn.dataset.id);
+            }
         });
 
         document.addEventListener("input", (e) => {
@@ -36,6 +41,10 @@ const Admin = {
                 clearTimeout(this._commentSearchTimer);
                 this._commentSearchTimer = setTimeout(() => this.loadAll(), 300);
             }
+            if (e.target.id === "adminSupportSearch") {
+                clearTimeout(this._supportSearchTimer);
+                this._supportSearchTimer = setTimeout(() => this.loadAll(), 300);
+            }
         });
     },
 
@@ -44,8 +53,10 @@ const Admin = {
         document.querySelectorAll("[data-admin-tab]").forEach(b => b.classList.toggle("active", b.dataset.adminTab === tab));
         document.getElementById("adminDreamList").style.display = tab === "dreams" ? "" : "none";
         document.getElementById("adminCommentList").style.display = tab === "comments" ? "" : "none";
+        document.getElementById("adminSupportList").style.display = tab === "support" ? "" : "none";
         document.getElementById("adminSearch").style.display = tab === "dreams" ? "" : "none";
         document.getElementById("adminCommentSearch").style.display = tab === "comments" ? "" : "none";
+        document.getElementById("adminSupportSearch").style.display = tab === "support" ? "" : "none";
         if (!this[tab] || this[tab].length === 0) this.loadAll();
     },
 
@@ -53,9 +64,12 @@ const Admin = {
         if (this.tab === "dreams") {
             await this.loadDreams();
             this.renderDreams();
-        } else {
+        } else if (this.tab === "comments") {
             await this.loadComments();
             this.renderComments();
+        } else {
+            await this.loadSupport();
+            this.renderSupport();
         }
     },
 
@@ -78,6 +92,17 @@ const Admin = {
             this.comments = await Storage.apiCall(url, "GET");
         } catch (e) {
             this.comments = [];
+        }
+    },
+
+    async loadSupport() {
+        try {
+            const q = document.getElementById("adminSupportSearch") ? document.getElementById("adminSupportSearch").value : "";
+            let url = "/admin/support";
+            if (q) url += "?q=" + encodeURIComponent(q);
+            this.support = await Storage.apiCall(url, "GET");
+        } catch (e) {
+            this.support = [];
         }
     },
 
@@ -150,6 +175,47 @@ const Admin = {
         `).join("");
     },
 
+    renderSupport() {
+        const container = document.getElementById("adminSupportList");
+        if (!container) return;
+
+        if (this.support.length === 0) {
+            container.innerHTML = `<div class="card" style="text-align:center;padding:40px;"><h3>${__("admin.supportEmpty")}</h3></div>`;
+            return;
+        }
+
+        const typeLabels = {
+            bug: "🐛 " + __("support.typeBug"),
+            question: "❓ " + __("support.typeQuestion"),
+            feedback: "💡 " + __("support.typeFeedback"),
+            other: "💬 " + __("support.typeOther")
+        };
+
+        container.innerHTML = this.support.map(m => {
+            const who = m.userName || m.userEmail || m.contact || __("discover.anonymous");
+            const typeLabel = typeLabels[m.type] || typeLabels.other;
+            return `
+                <div class="card" style="margin-bottom:10px;padding:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+                        <div style="flex:1;min-width:0;">
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                                <span class="badge" style="font-size:10px;">${typeLabel}</span>
+                                <strong style="font-size:13px;">${Utils.escapeHtml(who)}</strong>
+                                <span style="color:var(--text-muted);font-size:11px;">· ${new Date(m.createdAt).toLocaleString()}</span>
+                            </div>
+                            <p style="color:var(--text-secondary);font-size:13px;margin-top:6px;word-break:break-word;white-space:pre-wrap;">${Utils.escapeHtml(m.message)}</p>
+                            ${m.contact ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">📧 ${Utils.escapeHtml(m.contact)}</div>` : ""}
+                            ${m.page ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">📍 ${Utils.escapeHtml(m.page)}</div>` : ""}
+                        </div>
+                        <button class="btn admin-support-delete-btn" data-id="${m._id}" style="width:auto;padding:4px 12px;font-size:11px;border-color:var(--danger);color:var(--danger);flex-shrink:0;">
+                            ${__("admin.delete")}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    },
+
     async deleteDream(id, title) {
         if (!confirm(`${__("admin.confirmDelete")} "${title || __("discover.untitled")}"?`)) return;
         try {
@@ -166,6 +232,17 @@ const Admin = {
         try {
             await Storage.apiCall(`/admin/comments/${dreamId}/${commentId}`, "DELETE");
             Utils.showToast(__("admin.commentDeleted"), "success");
+            this.loadAll();
+        } catch (e) {
+            Utils.showToast(__("toast.failed") + e.message, "error");
+        }
+    },
+
+    async deleteSupport(id) {
+        if (!confirm(__("admin.confirmSupportDelete"))) return;
+        try {
+            await Storage.apiCall(`/admin/support/${id}`, "DELETE");
+            Utils.showToast(__("admin.supportDeleted"), "success");
             this.loadAll();
         } catch (e) {
             Utils.showToast(__("toast.failed") + e.message, "error");

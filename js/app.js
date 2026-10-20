@@ -23,6 +23,7 @@ const App = {
         Discover.init();
         Settings.init();
         Admin.init();
+        Support.init();
 
         if (Auth.isLoggedIn()) {
             await Storage.syncDreamsFromServer();

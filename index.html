@@ -402,19 +402,22 @@
             <h1 data-i18n="admin.title">🛡️ Admin Panel</h1>
             <p style="color:var(--text-muted);margin-bottom:16px;" data-i18n="admin.subtitle">Discover'daki tüm rüyaları yönet.</p>
 
-            <div style="display:flex;gap:6px;margin-bottom:16px;">
+            <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;">
                 <button class="btn btn-primary" data-admin-tab="dreams" style="width:auto;font-size:13px;" data-i18n="admin.tabDreams">🌙 Rüyalar</button>
                 <button class="btn" data-admin-tab="comments" style="width:auto;font-size:13px;" data-i18n="admin.tabComments">💬 Yorumlar</button>
+                <button class="btn" data-admin-tab="support" style="width:auto;font-size:13px;" data-i18n="admin.tabSupport">📨 Destek</button>
                 <button id="adminRefreshBtn" class="btn" style="width:auto;font-size:13px;margin-left:auto;" data-i18n="admin.refresh">🔄 Yenile</button>
             </div>
 
             <div style="display:flex;gap:10px;margin-bottom:16px;">
                 <input type="text" id="adminSearch" class="input" data-i18n-placeholder="admin.searchPlaceholder" placeholder="Rüyalarda ara..." style="max-width:300px;">
                 <input type="text" id="adminCommentSearch" class="input" data-i18n-placeholder="admin.commentSearchPlaceholder" placeholder="Yorumlarda ara..." style="max-width:300px;display:none;">
+                <input type="text" id="adminSupportSearch" class="input" data-i18n-placeholder="admin.supportSearchPlaceholder" placeholder="Destek mesajlarında ara..." style="max-width:300px;display:none;">
             </div>
 
             <div id="adminDreamList"></div>
             <div id="adminCommentList" style="display:none;"></div>
+            <div id="adminSupportList" style="display:none;"></div>
         </div>
 
     </div>
@@ -435,6 +438,7 @@
 <script src="js/discover.js"></script>
 <script src="js/settings.js"></script>
 <script src="js/admin.js"></script>
+<script src="js/support.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

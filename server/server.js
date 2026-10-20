@@ -33,7 +33,7 @@ app.use("/api/", apiLimiter);
 app.use("/api/register", authLimiter);
 app.use("/api/login", authLimiter);
 
-let db, usersCol, dreamsCol, sharedCol;
+let db, usersCol, dreamsCol, sharedCol, supportCol;
 
 async function connectDB() {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -51,8 +51,10 @@ async function connectDB() {
     usersCol = db.collection("users");
     dreamsCol = db.collection("dreams");
     sharedCol = db.collection("sharedDreams");
+    supportCol = db.collection("supportMessages");
     await usersCol.createIndex({ email: 1 }, { unique: true });
     await sharedCol.createIndex({ createdAt: -1 });
+    await supportCol.createIndex({ createdAt: -1 });
     console.log("MongoDB baglandi.");
 }
 
@@ -494,6 +496,55 @@ app.delete("/api/admin/comments/:dreamId/:commentId", adminMiddleware, async (re
     const comment = (dream.comments || []).find(c => (c._id && c._id.toString() === commentId) || (c.createdAt?.getTime?.()?.toString() === commentId));
     if (!comment) return res.status(404).json({ error: "Yorum bulunamadi." });
     await sharedCol.updateOne({ _id: new ObjectId(dreamId) }, { $pull: { comments: { _id: comment._id } } });
+    res.json({ success: true });
+});
+
+app.post("/api/support", async (req, res) => {
+    const { message, email, contact, type } = req.body;
+    if (!message || !message.trim()) {
+        return res.status(400).json({ error: "Mesaj gerekli." });
+    }
+    let userId = null, userName = null, userEmail = null;
+    const header = req.headers.authorization;
+    if (header && header.startsWith("Bearer ")) {
+        try {
+            const decoded = jwt.verify(header.split(" ")[1], process.env.JWT_SECRET);
+            userId = decoded.id;
+            userName = decoded.name;
+            userEmail = decoded.email;
+        } catch (e) {}
+    }
+    const doc = {
+        userId,
+        userName,
+        userEmail,
+        contact: (contact || email || userEmail || "").trim(),
+        type: type || "other",
+        message: message.trim(),
+        page: (req.body.page || "").toString(),
+        userAgent: (req.headers["user-agent"] || "").toString().substring(0, 300),
+        resolved: false,
+        createdAt: new Date()
+    };
+    const result = await supportCol.insertOne(doc);
+    res.status(201).json({ success: true, _id: result.insertedId });
+});
+
+app.get("/api/admin/support", adminMiddleware, async (req, res) => {
+    const { q } = req.query;
+    const filter = {};
+    if (q) filter.$or = [
+        { message: { $regex: q, $options: "i" } },
+        { contact: { $regex: q, $options: "i" } },
+        { userName: { $regex: q, $options: "i" } }
+    ];
+    const messages = await supportCol.find(filter).sort({ createdAt: -1 }).limit(200).toArray();
+    res.json(messages);
+});
+
+app.delete("/api/admin/support/:id", adminMiddleware, async (req, res) => {
+    const { id } = req.params;
+    await supportCol.deleteOne({ _id: new ObjectId(id) });
     res.json({ success: true });
 });
 
